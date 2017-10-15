@@ -282,7 +282,11 @@ class Turtle {
                 initY: runningY,
                 finalX: runningX + dx,
                 finalY: runningY + dy,
-                pen: this.pen
+                pen: {
+                    width: this.pen.width,
+                    color: this.pen.color
+                }
+
             });
 
             count++;
@@ -295,7 +299,10 @@ class Turtle {
             initY: runningY - dy,
             finalX: finalX,
             finalY: finalY,
-            pen: this.pen
+            pen: {
+                width: this.pen.width,
+                color: this.pen.color
+            }
         })
 
         return ret;
