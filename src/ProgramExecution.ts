@@ -1,12 +1,36 @@
+import * as TS from 'typescript';
+
+let TurtleTS: string;
 let TurtleJS: string;
 
 let client = new XMLHttpRequest();
+client.open('GET', './turtle/turtle.ts');
+client.onreadystatechange = function () {
+    TurtleTS = client.responseText;
+};
+client.send();
+
+client = new XMLHttpRequest();
 client.open('GET', './turtle/turtle.js');
 client.onreadystatechange = function () {
     TurtleJS = client.responseText;
-    TurtleJS += "\nlet Tom = new Turtle();"
 };
 client.send();
+
+/**
+ * A utility for transpiling user-created Typescript into
+ * executable Javascript
+ */
+class ProgramCompiler {
+    userTS: string;
+
+    constructor(userTS: string) {
+        this.userTS = userTS;
+    }
+    getJS(): string {
+        return TS.transpile(this.userTS);
+    }
+}
 
 class ProgramExecution {
     static running: false;
@@ -20,6 +44,13 @@ class ProgramExecution {
         };
     }
 
+    terminate(reason: string) {
+        this.worker.terminate();
+    }
+
+    // start(): void {
+    // }
+
     private compileWorker(program: string): Worker {
         const progBlob = new Blob([TurtleJS, program], { type: 'text/javascript' });
         const progURL = URL.createObjectURL(progBlob);
@@ -29,13 +60,6 @@ class ProgramExecution {
         return worker;
     }
 
-    terminate(reason: string) {
-        this.worker.terminate();
-    }
-
-    start(): void {
-
-    }
 }
 
-export default ProgramExecution;
+export default ProgramCompiler;
