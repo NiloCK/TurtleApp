@@ -274,10 +274,7 @@ class Turtle {
             initY: runningY - dy,
             finalX: finalX,
             finalY: finalY,
-            pen: {
-                color: 'black',
-                width: 2
-            }
+            pen: this.pen
         })
 
         return ret;
