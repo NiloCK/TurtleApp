@@ -44,7 +44,7 @@ class Animator {
     }
 
     private animate = () => {
-        console.log(`Animating ${this.animationQueues.length} turtles...`);
+        // console.log(`Animating ${this.animationQueues.length} turtles...`);
 
         let strokes = this.getFrameStrokes();
 
@@ -225,7 +225,7 @@ class Turtle {
                 this.moveAnimationFrameCount(distance));
             strokes.forEach(stroke => {
                 // Turtle.AnimationManager.frames.enqueue([stroke]);
-                console.log(`Enqueuing a stroke.`);
+                // console.log(`Enqueuing a stroke.`);
                 this.strokeQueue.enqueue(stroke);
             });
 
@@ -311,7 +311,7 @@ class Turtle {
             return 0;
         } else {
             let ret = distance / (10 * this.speed)
-            console.log(`This line will take: ${ret} seconds`);
+            // console.log(`This line will take: ${ret} seconds`);
             return ret;
         }
     }

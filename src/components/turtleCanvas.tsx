@@ -14,7 +14,7 @@ class TurtleCanvas extends React.Component {
     }
 
     static toggleTurtleVisibility() {
-        console.log('toggling the grid...');
+        // console.log('toggling the grid...');
         let gridCanvas = TurtleCanvas.getGridCanvas();
 
         // todo rewrite this to use css animation for a fade in/out
@@ -26,7 +26,7 @@ class TurtleCanvas extends React.Component {
     }
 
     static toggleGridVisibility() {
-        console.log('toggling the grid...');
+        // console.log('toggling the grid...');
         let gridCanvas = TurtleCanvas.getGridCanvas();
 
         // todo rewrite this to use css animation for a fade in/out
