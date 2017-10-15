@@ -1,0 +1,56 @@
+.App {
+  text-align: center;
+}
+
+.react-monaco-editor-container {
+  text-align: left;
+}
+#EditorAndCanvas {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  height: 100%;
+}
+#canvasLayers {
+  position: relative;
+  flex: 0px
+}
+#turtleCanvas {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 0;
+}
+#turtleDrawingCanvas {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 1;
+}
+#gridCanvas {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 2;
+}
+
+.App-logo {
+  animation: App-logo-spin infinite 20s linear;
+  height: 80px;
+}
+
+.App-header {
+  background-color: #222;
+  /* height: 150px; */
+  padding: 10px;
+  color: white;
+}
+
+.App-intro {
+  font-size: large;
+}
+
+@keyframes App-logo-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
