@@ -4,8 +4,9 @@ class Pen {
     width: number;
 }
 
-class Queue<T>{
+class QueueTree<T>{
     private queue: Array<T> = new Array<T>();
+    private children: Array<QueueTree<T>> = new Array<QueueTree<T>>();
 
     enqueue(element: T): void {
         this.queue.push(element);
@@ -19,6 +20,12 @@ class Queue<T>{
         else {
             return null;
         }
+    }
+    yieldChildren(): Array<QueueTree<T>> {
+        return this.children;
+    }
+    addChild(child: QueueTree<T>): void {
+        this.children.push(child);
     }
 }
 
@@ -34,12 +41,12 @@ class CanvasStroke {
 
 class Animator {
     private static instance: Animator;
-    private animationQueues: Array<Queue<CanvasStroke>>;
+    private animationQueues: Array<QueueTree<CanvasStroke>>;
     private ctx: CanvasRenderingContext2D;
 
     private constructor(ctx: CanvasRenderingContext2D) {
         this.ctx = ctx;
-        this.animationQueues = new Array<Queue<CanvasStroke>>();
+        this.animationQueues = new Array<QueueTree<CanvasStroke>>();
         this.animate(); // always be animating!
     }
 
@@ -62,22 +69,45 @@ class Animator {
         requestAnimationFrame(this.animate);
     }
 
-    addTurtleAnimationQueue(queue: Queue<CanvasStroke>): void {
+    addTurtleAnimationQueue(queue: QueueTree<CanvasStroke>): void {
         this.animationQueues.push(queue);
     }
 
     private getFrameStrokes(): Array<CanvasStroke> {
         let ret = new Array<CanvasStroke>();
         // console.log(`Attempting to get frames from Turtles...`);
+        // let newQueues: Array<QueueTree<CanvasStroke>> = new Array<QueueTree<CanvasStroke>>();
+        let deadTurtles = new Array<QueueTree<CanvasStroke>>();
 
         for (let i = 0; i < this.animationQueues.length; i++) {
             let stroke = this.animationQueues[i].dequeue();
             if (stroke) {
                 ret.push(stroke);
+            } else {
+                // this.queueSuccession(this.animationQueues[i]);
+                deadTurtles.push(this.animationQueues[i]);
             }
         }
 
+        // this.queueSuccession(t);
+        deadTurtles.forEach((deadTurtle) => {
+            this.queueSuccession(deadTurtle);
+        })
+        // this.animationQueues.concat(newQueues);
         return ret;
+    }
+    private queueSuccession(q: QueueTree<CanvasStroke>) {
+        let index = this.animationQueues.indexOf(q);
+        console.log(`${this.animationQueues.length} Turtles now...`);
+        this.animationQueues.splice(index, 1);
+        // delete this.animationQueues[index];
+        console.log(`Removing a turtle... ${this.animationQueues.length} turtles now...`);
+
+        q.yieldChildren().forEach((queueTree) => {
+            this.animationQueues.push(queueTree);
+            console.log(`adding a turtle... ${this.animationQueues.length}`);
+
+        });
     }
 
     public static isIntialized(): boolean {
@@ -106,7 +136,7 @@ class Turtle {
         Turtle.drawTurtles = true;
     }
 
-    private strokeQueue: Queue<CanvasStroke>;
+    private strokeQueue: QueueTree<CanvasStroke>;
 
     /**
      * The x coordinate of the Turtle
@@ -135,7 +165,9 @@ class Turtle {
     constructor(x?: number | Turtle, y?: number, angle?: number, canvas?: HTMLCanvasElement, ) {
         if (x) {
             if (typeof (x) != "number") {
-                this.strokeQueue = x.strokeQueue;
+                this.strokeQueue = new QueueTree<CanvasStroke>();
+                x.strokeQueue.addChild(this.strokeQueue);
+
                 this.ctx = x.ctx;
                 this.x = x.x;
                 this.y = x.y;
@@ -146,7 +178,7 @@ class Turtle {
                 // the strokeQueue is already registered w/ the animator
             }
         } else {
-            this.strokeQueue = new Queue<CanvasStroke>();
+            this.strokeQueue = new QueueTree<CanvasStroke>();
 
             if (canvas) {
                 this.ctx = <CanvasRenderingContext2D>canvas.getContext("2d");
