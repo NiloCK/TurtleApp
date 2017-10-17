@@ -98,14 +98,14 @@ class Animator {
     }
     private queueSuccession(q: QueueTree<CanvasStroke>) {
         let index = this.animationQueues.indexOf(q);
-        console.log(`${this.animationQueues.length} Turtles now...`);
+        // console.log(`${this.animationQueues.length} Turtles now...`);
         this.animationQueues.splice(index, 1);
         // delete this.animationQueues[index];
-        console.log(`Removing a turtle... ${this.animationQueues.length} turtles now...`);
+        // console.log(`Removing a turtle... ${this.animationQueues.length} turtles now...`);
 
         q.yieldChildren().forEach((queueTree) => {
             this.animationQueues.push(queueTree);
-            console.log(`adding a turtle... ${this.animationQueues.length}`);
+            // console.log(`adding a turtle... ${this.animationQueues.length}`);
 
         });
     }
