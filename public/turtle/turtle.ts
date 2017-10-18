@@ -36,16 +36,23 @@ class CanvasStroke {
     finalX: number;
     finalY: number;
 
+    angle: number;
+
     pen: Pen;
 }
 
 class Animator {
     private static instance: Animator;
     private animationQueues: Array<QueueTree<CanvasStroke>>;
-    private ctx: CanvasRenderingContext2D;
+    private lineDrawingCtx: CanvasRenderingContext2D;
+    private turtleOverlayCtx: CanvasRenderingContext2D;
 
     private constructor(ctx: CanvasRenderingContext2D) {
-        this.ctx = ctx;
+        this.lineDrawingCtx = ctx;
+
+        let overlayCtx = document.getElementById('turtleOverlayCanvas') as HTMLCanvasElement;
+        this.turtleOverlayCtx = overlayCtx.getContext('2d') as CanvasRenderingContext2D;
+
         this.animationQueues = new Array<QueueTree<CanvasStroke>>();
         this.animate(); // always be animating!
     }
@@ -54,16 +61,19 @@ class Animator {
         // console.log(`Animating ${this.animationQueues.length} turtles...`);
 
         let strokes = this.getFrameStrokes();
+        this.turtleOverlayCtx.clearRect(0, 0, 10000, 10000);
 
         strokes.forEach(stroke => {
-            this.ctx.strokeStyle = stroke.pen.color;
-            this.ctx.lineWidth = stroke.pen.width;
-            this.ctx.lineCap = "square";
+            this.lineDrawingCtx.strokeStyle = stroke.pen.color;
+            this.lineDrawingCtx.lineWidth = stroke.pen.width;
+            this.lineDrawingCtx.lineCap = "square";
 
-            this.ctx.beginPath();
-            this.ctx.moveTo(stroke.initX, stroke.initY);
-            this.ctx.lineTo(stroke.finalX, stroke.finalY);
-            this.ctx.stroke();
+            this.lineDrawingCtx.beginPath();
+            this.lineDrawingCtx.moveTo(stroke.initX, stroke.initY);
+            this.lineDrawingCtx.lineTo(stroke.finalX, stroke.finalY);
+            this.lineDrawingCtx.stroke();
+
+            this.turtleOverlayCtx.fillRect(stroke.finalX, stroke.finalY, 5, 5);
         });
 
         requestAnimationFrame(this.animate);
@@ -126,6 +136,9 @@ class Animator {
 
 }
 
+class heading {
+    x: number;
+}
 class Turtle {
     // private static AnimationManager: AnimationManager = new AnimationManager();
     private static drawTurtles: boolean = true;
@@ -184,6 +197,7 @@ class Turtle {
                 this.ctx = <CanvasRenderingContext2D>canvas.getContext("2d");
             } else {
                 canvas = <HTMLCanvasElement>document.getElementById('turtleCanvas');
+
                 this.ctx = <CanvasRenderingContext2D>canvas.getContext("2d");
             }
 
@@ -309,6 +323,7 @@ class Turtle {
                 initY: runningY,
                 finalX: runningX + dx,
                 finalY: runningY + dy,
+                angle: this.angle,
                 pen: {
                     width: this.pen.width,
                     color: this.pen.color
@@ -326,6 +341,7 @@ class Turtle {
             initY: runningY - dy,
             finalX: finalX,
             finalY: finalY,
+            angle: this.angle,
             pen: {
                 width: this.pen.width,
                 color: this.pen.color
