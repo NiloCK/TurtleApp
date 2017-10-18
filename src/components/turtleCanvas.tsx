@@ -90,7 +90,7 @@ class TurtleCanvas extends React.Component {
                     height={this.props.height}
                 />
                 <canvas
-                    id="turtleDrawingCanvas"
+                    id="turtleOverlayCanvas"
                     width={this.props.width}
                     height={this.props.height}
                 />
