@@ -32,24 +32,35 @@
     // see this link for info on adding definition files to monaco
     // https://stackoverflow.com/questions/43037243/provide-type-hints-to-monaco-editor
 
-    setTimeout(function () {
-      console.log("Timeout Fcn is running...");
+    function attachTS() {
+      setTimeout(function () {
+        if (window.monaco) {
 
-      var client = new XMLHttpRequest();
-      client.open('GET', './turtle/turtle.d.ts');
-      let turtleDefinitionFileText;
-      client.onreadystatechange = function () {
-        turtleDefinitionFileText = client.responseText;
+          console.log("Timeout Fcn is running...");
 
-        // monaco.languages.typescript.typescriptDefaults.addExtraLib(
-        // turtleDefinitionFileText);
-        // monaco.languages.typescript.javascriptDefaults.addExtraLib(
-        //   turtleDefinitionFileText);
-        monaco.languages.typescript.typescriptDefaults.addExtraLib(
-          turtleDefinitionFileText);
-      };
-      client.send();
-    }, 5000);
+          var client = new XMLHttpRequest();
+          client.open('GET', './turtle/turtle.d.ts');
+          let turtleDefinitionFileText;
+          client.onreadystatechange = function () {
+            turtleDefinitionFileText = client.responseText;
+
+            // monaco.languages.typescript.typescriptDefaults.addExtraLib(
+            // turtleDefinitionFileText);
+            // monaco.languages.typescript.javascriptDefaults.addExtraLib(
+            //   turtleDefinitionFileText);
+            monaco.languages.typescript.typescriptDefaults.addExtraLib(
+              turtleDefinitionFileText);
+          };
+          client.send();
+        }
+        else {
+          console.log("No monaco yet...");
+          attachTS();
+        }
+      }, 1000);
+
+    }
+    window.onload = attachTS;
   </script>
   <title>Range Lake North Programming Club</title>
 </head>
