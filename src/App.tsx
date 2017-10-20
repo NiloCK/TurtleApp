@@ -59,14 +59,7 @@ class App extends React.Component {
             value={
               `// Type your code in here.
 
-let t = new Turtle();
-
-let count = 0;
-while (count < 300) {
-  t.move(3);
-  t.turnRight(1 / 100);
-  count++;
-}
+let tom = new Turtle();
 
 `}
             options={{
