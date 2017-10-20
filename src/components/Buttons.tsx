@@ -1,4 +1,5 @@
 import * as React from 'react';
+// import { Appbar } from 'muicss/react';
 
 class Controls extends React.Component {
     props: {
@@ -9,7 +10,7 @@ class Controls extends React.Component {
 
     render() {
         return (
-            <div>
+            <div id="controls">
                 <Play click={this.props.playFunction} />
                 <ToggleGrid click={this.props.toggleGridFunction} />
                 <ToggleTurtles click={this.props.toggleTurtlesFunction} />
@@ -35,9 +36,9 @@ class Play extends Button {
 
     render() {
         return (
-            <div onClick={this.props.click}>
+            <button onClick={this.props.click}>
                 Run Code
-            </div>
+            </button>
         );
     }
 }
@@ -48,9 +49,9 @@ class ToggleGrid extends Button {
     }
     render() {
         return (
-            <div onClick={this.props.click}>
+            <button onClick={this.props.click}>
                 Show Grid
-            </div>
+            </button>
         );
     }
 }
@@ -61,9 +62,9 @@ class ToggleTurtles extends Button {
     }
     render() {
         return (
-            <div onClick={this.props.click}>
+            <button onClick={this.props.click}>
                 Show Turtles
-            </div>
+            </button>
         );
     }
 }

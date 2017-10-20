@@ -5,6 +5,12 @@
 .react-monaco-editor-container {
   text-align: left;
 }
+#controls{
+  text-align: right;
+  align-content: right;
+  display: inline;
+  float: right; 
+}
 #EditorAndCanvas {
   display: flex;
   flex-direction: row;
@@ -40,11 +46,17 @@
   height: 80px;
 }
 
+
+
 .App-header {
   background-color: #222;
+  text-align: left;
   /* height: 150px; */
   padding: 10px;
   color: white;
+}
+.App-header > h2 {
+  display: inline;
 }
 
 .App-intro {

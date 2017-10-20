@@ -43,9 +43,7 @@ class App extends React.Component {
       <div className="App">
         <div className="App-header">
           {/* <img src={logo} className="App-logo" alt="logo" /> */}
-          <h2>Welcome to the RLNPC</h2>
-        </div>
-        <div className="App-intro">
+          <h2>Welcome to the RLN Programming Club!</h2>
           <Controls
             playFunction={this.runEditorCode}
             toggleGridFunction={TurtleCanvas.toggleGridVisibility}
