@@ -26,10 +26,6 @@ class Button extends React.Component {
 }
 
 class Play extends Button {
-
-    handleClick = () => {
-        alert('Hi again');
-    }
     constructor(props: { click: Function }) {
         super(props);
     }
