@@ -46,6 +46,7 @@ class Animator {
     private animationQueues: Array<QueueTree<CanvasStroke>>;
     private lineDrawingCtx: CanvasRenderingContext2D;
     private turtleOverlayCtx: CanvasRenderingContext2D;
+    private turtleImg: HTMLImageElement;
 
     private constructor(ctx: CanvasRenderingContext2D) {
         this.lineDrawingCtx = ctx;
@@ -54,7 +55,25 @@ class Animator {
         this.turtleOverlayCtx = overlayCtx.getContext('2d') as CanvasRenderingContext2D;
 
         this.animationQueues = new Array<QueueTree<CanvasStroke>>();
+
+        // this.turtleImg = new Image();
+        // this.turtleImg.onload = () => {
+        //     this.animate(); // always be animating!
+        // }
+        // this.turtleImg.src = './turtle/turtle.PNG';
+
         this.animate(); // always be animating!
+    }
+    /**
+     * Draws a 'pizza slice' turtle
+     */
+    private drawTurtle(x: number, y: number, angle: number) {
+        angle = angle + Math.PI;
+        this.turtleOverlayCtx.fillStyle = 'green';
+        this.turtleOverlayCtx.beginPath();
+        this.turtleOverlayCtx.moveTo(x, y);
+        this.turtleOverlayCtx.arc(x, y, 25, angle + (Math.PI / 8), angle - (Math.PI / 8), true);
+        this.turtleOverlayCtx.fill();
     }
 
     private animate = () => {
@@ -73,7 +92,13 @@ class Animator {
             this.lineDrawingCtx.lineTo(stroke.finalX, stroke.finalY);
             this.lineDrawingCtx.stroke();
 
-            this.turtleOverlayCtx.fillRect(stroke.finalX, stroke.finalY, 5, 5);
+            // this.turtleOverlayCtx.drawImage(
+            //     this.turtleImg,
+            //     stroke.finalX,
+            //     stroke.finalY,
+            //     20, 20);
+            this.drawTurtle(stroke.finalX, stroke.finalY, stroke.angle);
+
         });
 
         requestAnimationFrame(this.animate);
@@ -136,9 +161,6 @@ class Animator {
 
 }
 
-class heading {
-    x: number;
-}
 class Turtle {
     // private static AnimationManager: AnimationManager = new AnimationManager();
     private static drawTurtles: boolean = true;
@@ -197,7 +219,6 @@ class Turtle {
                 this.ctx = <CanvasRenderingContext2D>canvas.getContext("2d");
             } else {
                 canvas = <HTMLCanvasElement>document.getElementById('turtleCanvas');
-
                 this.ctx = <CanvasRenderingContext2D>canvas.getContext("2d");
             }
 
