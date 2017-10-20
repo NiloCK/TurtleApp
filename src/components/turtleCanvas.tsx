@@ -10,18 +10,18 @@ class TurtleCanvas extends React.Component {
         return document.getElementById('gridCanvas') as HTMLCanvasElement;
     }
     static getTurtleDrawingCanvas(): HTMLCanvasElement {
-        return document.getElementById('gridCanvas') as HTMLCanvasElement;
+        return document.getElementById('turtleOverlayCanvas') as HTMLCanvasElement;
     }
 
     static toggleTurtleVisibility() {
         // console.log('toggling the grid...');
-        let gridCanvas = TurtleCanvas.getGridCanvas();
+        let turtleOverlayCanvas = TurtleCanvas.getTurtleDrawingCanvas();
 
         // todo rewrite this to use css animation for a fade in/out
-        if (gridCanvas.style.getPropertyValue('opacity') !== '0') {
-            gridCanvas.style.setProperty('opacity', '0');
+        if (turtleOverlayCanvas.style.getPropertyValue('opacity') !== '0') {
+            turtleOverlayCanvas.style.setProperty('opacity', '0');
         } else {
-            gridCanvas.style.setProperty('opacity', '1');
+            turtleOverlayCanvas.style.setProperty('opacity', '1');
         }
     }
 
@@ -30,10 +30,10 @@ class TurtleCanvas extends React.Component {
         let gridCanvas = TurtleCanvas.getGridCanvas();
 
         // todo rewrite this to use css animation for a fade in/out
-        if (gridCanvas.style.getPropertyValue('opacity') !== '0') {
-            gridCanvas.style.setProperty('opacity', '0');
-        } else {
+        if (gridCanvas.style.getPropertyValue('opacity') !== '1') {
             gridCanvas.style.setProperty('opacity', '1');
+        } else {
+            gridCanvas.style.setProperty('opacity', '0');
         }
     }
 

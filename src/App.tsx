@@ -49,6 +49,7 @@ class App extends React.Component {
           <Controls
             playFunction={this.runEditorCode}
             toggleGridFunction={TurtleCanvas.toggleGridVisibility}
+            toggleTurtlesFunction={TurtleCanvas.toggleTurtleVisibility}
           />
         </div>
         <div id="EditorAndCanvas">
