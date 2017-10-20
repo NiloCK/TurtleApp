@@ -6,6 +6,7 @@
   "dependencies": {
     "@types/react-monaco-editor": "^0.8.2",
     "monaco-editor": "^0.10.0",
+    "muicss": "^0.9.27",
     "react": "^16.0.0",
     "react-dom": "^16.0.0",
     "react-monaco-editor": "^0.10.1",
