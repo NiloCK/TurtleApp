@@ -198,20 +198,17 @@ class Turtle {
     private ctx: CanvasRenderingContext2D;
 
     constructor(x?: number | Turtle, y?: number, angle?: number, canvas?: HTMLCanvasElement, ) {
-        if (x) {
-            if (typeof (x) != "number") {
-                this.strokeQueue = new QueueTree<CanvasStroke>();
-                x.strokeQueue.addChild(this.strokeQueue);
+        if (x && typeof (x) != "number") {
+            let parentTurtle = x;
+            this.strokeQueue = new QueueTree<CanvasStroke>();
+            parentTurtle.strokeQueue.addChild(this.strokeQueue);
 
-                this.ctx = x.ctx;
-                this.x = x.x;
-                this.y = x.y;
-                this.angle = x.angle;
-                this.speed = x.speed;
-                this.pen = x.pen;
-
-                // the strokeQueue is already registered w/ the animator
-            }
+            this.ctx = parentTurtle.ctx;
+            this.x = parentTurtle.x;
+            this.y = parentTurtle.y;
+            this.angle = parentTurtle.angle;
+            this.speed = parentTurtle.speed;
+            this.pen = parentTurtle.pen;
         } else {
             this.strokeQueue = new QueueTree<CanvasStroke>();
 
