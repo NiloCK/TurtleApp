@@ -142,9 +142,6 @@ class Animator {
         });
     }
 
-    public static isIntialized(): boolean {
-        return this.instance ? true : false;
-    }
     public static Instance(ctx?: CanvasRenderingContext2D): Animator {
         if (this.instance) {
             return this.instance;
