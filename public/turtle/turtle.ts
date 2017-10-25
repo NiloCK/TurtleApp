@@ -1,4 +1,3 @@
-// class Animation {}
 class Pen {
     color: string;
     width: number;
@@ -111,7 +110,6 @@ class Animator {
     private getFrameStrokes(): Array<CanvasStroke> {
         let ret = new Array<CanvasStroke>();
         // console.log(`Attempting to get frames from Turtles...`);
-        // let newQueues: Array<QueueTree<CanvasStroke>> = new Array<QueueTree<CanvasStroke>>();
         let deadTurtles = new Array<QueueTree<CanvasStroke>>();
 
         for (let i = 0; i < this.animationQueues.length; i++) {
@@ -119,16 +117,15 @@ class Animator {
             if (stroke) {
                 ret.push(stroke);
             } else {
-                // this.queueSuccession(this.animationQueues[i]);
                 deadTurtles.push(this.animationQueues[i]);
             }
         }
 
-        // this.queueSuccession(t);
+        // shake all dead turtles to see if they have children
         deadTurtles.forEach((deadTurtle) => {
             this.queueSuccession(deadTurtle);
         })
-        // this.animationQueues.concat(newQueues);
+
         return ret;
     }
     private queueSuccession(q: QueueTree<CanvasStroke>) {
@@ -162,7 +159,6 @@ class Animator {
 }
 
 class Turtle {
-    // private static AnimationManager: AnimationManager = new AnimationManager();
     private static drawTurtles: boolean = true;
     static hide = () => {
         Turtle.drawTurtles = false;
@@ -219,10 +215,6 @@ class Turtle {
                 this.ctx = <CanvasRenderingContext2D>canvas.getContext("2d");
             }
 
-            // if (Turtle.AnimationManager.ctx == null) {
-            //     Turtle.AnimationManager.setContext(this.ctx);
-            // }
-
             this.x = (x != undefined) ? x : Math.round(canvas.width / 2);
             this.y = (y != undefined) ? y : Math.round(canvas.height / 2);
 
@@ -260,7 +252,6 @@ class Turtle {
         let dy = Math.sin(this.angle) * distance;
 
         if (this.drawing) {
-            // this.draw(dx, dy, this.moveTime(distance));
             let strokes = this.getStrokes(
                 this.x,
                 this.y,
@@ -272,14 +263,10 @@ class Turtle {
                 // console.log(`Enqueuing a stroke.`);
                 this.strokeQueue.enqueue(stroke);
             });
-
-
-            // Turtle.AnimationManager.animate();
         }
 
         this.x += dx;
         this.y += dy;
-
     }
 
     private getStrokes(
@@ -310,7 +297,6 @@ class Turtle {
                     width: this.pen.width,
                     color: this.pen.color
                 }
-
             });
 
             count++;
@@ -381,7 +367,7 @@ class Turtle {
     }
 
     private normalizeAngle(): void {
-        //this.moveAnimationFrameCount(0); // should I animate the turning Turtle?
+        // should I animate the turning Turtle?
 
         while (this.angle >= 2 * Math.PI) {
             this.angle -= 2 * Math.PI;
