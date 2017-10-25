@@ -232,42 +232,6 @@ class Turtle {
 
     }
 
-
-    /**
-     * Creates a new turtle at the specified coordinates, or with the same
-     * location / orientation of the parent if no coordinates are given.
-     * @param x 
-     * @param y 
-     * @param angle 
-     */
-    // protected newTurtle(x?: number, y?: number, speed?: number, angle?: number): Turtle {
-    //     let babyTurtle = new Turtle(
-    //         x ? x : this.x,
-    //         y ? y : this.y,
-    //         angle ? angle : this.angle,
-    //         this.ctx.canvas);
-
-    //     babyTurtle.speed = speed ? speed : this.speed;
-    //     babyTurtle.angle = angle ? angle : this.angle;
-
-    //     return babyTurtle;
-    // }
-
-    /**
-     * Creates a 'family' of new turtles at the same location and angle
-     * of the parent turtle.
-     * @param n The number of turtles to produce
-     */
-    // newTurtles(n: number): Array<this> {
-    //     let ret: Array<this> = [];
-
-    //     for (let i = 0; i < n; i++) {
-    //         ret.push(this.newTurtle());
-    //     }
-
-    //     return ret;
-    // }
-
     /**
      * Lifts the turtle's drawing pen.
      */

@@ -4,6 +4,7 @@ import MonacoEditor from 'react-monaco-editor';
 import { Play, Controls } from './components/Buttons';
 import TurtleCanvas from './components/turtleCanvas';
 import ProgramCompiler from './ProgramExecution';
+import db from './db';
 
 const logo = require('./logo.svg');
 
