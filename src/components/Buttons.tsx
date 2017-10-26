@@ -6,6 +6,7 @@ class Controls extends React.Component {
         playFunction: () => void;
         toggleGridFunction: () => void;
         toggleTurtlesFunction: () => void;
+        saveCode: () => void;
     };
 
     render() {
@@ -14,10 +15,12 @@ class Controls extends React.Component {
                 <Play click={this.props.playFunction} />
                 <ToggleGrid click={this.props.toggleGridFunction} />
                 <ToggleTurtles click={this.props.toggleTurtlesFunction} />
+                <Save click={this.props.saveCode} />
             </div>
         );
     }
 }
+
 
 class Button extends React.Component {
     props: {
@@ -25,6 +28,19 @@ class Button extends React.Component {
     };
 }
 
+class Save extends Button {
+    constructor(props: { click: Function }) {
+        super(props);
+    }
+
+    render() {
+        return (
+            <button onClick={this.props.click}>
+                Save Code
+            </button>
+        );
+    }
+}
 class Play extends Button {
     constructor(props: { click: Function }) {
         super(props);

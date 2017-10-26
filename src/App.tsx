@@ -5,21 +5,51 @@ import { Play, Controls } from './components/Buttons';
 import TurtleCanvas from './components/turtleCanvas';
 import ProgramCompiler from './ProgramExecution';
 import DB from './db';
+// import Student from './student';
 
 const logo = require('./logo.svg');
 
 class App extends React.Component {
+  currentUser: string = 'MrK';
   editor: monaco.editor.ICodeEditor;
+
 
   handleEditorDidMount = (editor: {}) => {
     this.editor = editor as monaco.editor.ICodeEditor;
+    // this.login();
+    this.loadUserCode();
+  }
+
+  loadUserCode = () => {
+
+    // load code from db
+    DB.Instance().getCode().then((code) => {
+      this.editor.setValue(code[this.currentUser]);
+    });
+  }
+
+  login = () => {
+    let user: string = prompt("Username:") as string;
+    let pw: string = prompt("Password: ") as string;
+
+    DB.getUsers().then((users) => {
+      if (users[user] === pw) {
+        alert('yay');
+        this.currentUser = user;
+        this.loadUserCode();
+      } else {
+        alert('Username / pw incorrect');
+      }
+    })
+  }
+  saveEditorCode = () => {
+    let ts = this.editor.getValue();
+    DB.Instance().saveCode(this.currentUser, ts);
   }
 
   runEditorCode = () => {
     this.clearTurtleCanvas();
     let ts = this.editor.getValue();
-    DB.Instance().writeTurtle(ts);
-
     let js = new ProgramCompiler(ts).getJS();
 
     // alert(js);
@@ -49,6 +79,7 @@ class App extends React.Component {
             playFunction={this.runEditorCode}
             toggleGridFunction={TurtleCanvas.toggleGridVisibility}
             toggleTurtlesFunction={TurtleCanvas.toggleTurtleVisibility}
+            saveCode={this.saveEditorCode}
           />
         </div>
         <div id="EditorAndCanvas">

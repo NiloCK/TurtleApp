@@ -31,11 +31,29 @@ export default class DB {
         }
     }
 
-    public writeTurtle(ts: string) {
-        this.localDB.put({
-            _id: new Date().toJSON(),
-            ts: ts
+    public static getUsers(): Promise<string> {
+        return DB.Instance().localDB.get('users');
+        // return this.localDB.get('users');
+    }
+
+    public getCode(): Promise<string> {
+        // let ret: string;
+        return this.localDB.get('code');
+    }
+
+    public saveCode(user: string, ts: string) {
+        this.localDB.get('code').then((doc) => {
+            // 'currentUser' here instead of MrK
+            doc[user] = ts;
+            return this.localDB.put(doc);
+        }).catch((reason) => {
+            console.log("Failure: " + reason);
         });
+
+        // this.localDB.put({
+        //     _id: 'code',
+        //     "MrK": ts
+        // });
     }
 
     private constructor() {
