@@ -7,11 +7,18 @@ class Controls extends React.Component {
         toggleGridFunction: () => void;
         toggleTurtlesFunction: () => void;
         saveCode: () => void;
+        loginFunction: () => void;
+        loggedIn: boolean;
+        username: string;
     };
 
     render() {
         return (
             <div id="controls">
+                <Login
+                    click={this.props.loginFunction}
+                    loggedIn={this.props.loggedIn}
+                    username={this.props.username} />
                 <Play click={this.props.playFunction} />
                 <ToggleGrid click={this.props.toggleGridFunction} />
                 <ToggleTurtles click={this.props.toggleTurtlesFunction} />
@@ -26,6 +33,30 @@ class Button extends React.Component {
     props: {
         click: () => void;
     };
+}
+
+class Login extends Button {
+    props: {
+        click: () => void;
+        loggedIn: boolean;
+        username: string;
+    }
+
+    constructor(props: { click: Function }) {
+        super(props);
+    }
+
+    render() {
+        if (!this.props.loggedIn) {
+            return (
+                <button onClick={this.props.click}>
+                    Log In / Register
+                </button>
+            );
+        } else {
+            return (<span>Hi, {this.props.username}</span>);
+        }
+    }
 }
 
 class Save extends Button {

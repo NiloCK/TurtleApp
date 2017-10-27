@@ -32,28 +32,44 @@ export default class DB {
     }
 
     public static getUsers(): Promise<string> {
-        return DB.Instance().localDB.get('users');
+        return DB.Instance().remoteDB.get('users');
         // return this.localDB.get('users');
     }
 
     public getCode(): Promise<string> {
         // let ret: string;
-        return this.localDB.get('code');
+        return this.remoteDB.get('code');
+    }
+    // public static getUserCode(user: string): Promise<string> {
+    //     return this.Instance().localDB.get(user);
+    // }
+    public static addUser(userName: string, password: string) {
+        this.Instance().remoteDB.get('users').then((doc) => {
+            doc['users'][userName] = password;
+            return this.Instance().remoteDB.put(doc);
+        }).catch((reason) => {
+            console.log('Registration failure: ');
+            console.log(reason);
+        }).then((resp: PouchDB.Core.Response) => {
+            if (resp.ok) {
+                alert(`Welcome! User '${userName}' created.`);
+            }
+        });
     }
 
     public saveCode(user: string, ts: string) {
-        this.localDB.get('code').then((doc) => {
+        this.remoteDB.get('code').then((doc) => {
             // 'currentUser' here instead of MrK
             doc[user] = ts;
             return this.localDB.put(doc);
         }).catch((reason) => {
-            console.log("Failure: " + reason);
+            console.log('Save Failure: ');
+            console.log(reason);
+        }).then((resp: PouchDB.Core.Response) => {
+            if (resp.ok) {
+                alert('Saved!');
+            }
         });
-
-        // this.localDB.put({
-        //     _id: 'code',
-        //     "MrK": ts
-        // });
     }
 
     private constructor() {
