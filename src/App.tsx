@@ -5,7 +5,7 @@ import MonacoEditor from 'react-monaco-editor';
 import { Play, Controls } from './components/Buttons';
 import TurtleCanvas from './components/turtleCanvas';
 import ProgramCompiler from './ProgramExecution';
-import DB from './db';
+import { DB, TurtleCoder } from './db';
 // import Student from './student';
 
 const logo = require('./logo.svg');
@@ -15,24 +15,27 @@ const HTML_IDS = {
   login_password: 'passwordField'
 };
 
+class AppState {
+  showLoginModal: boolean;
+  user?: TurtleCoder;
+}
+
 class App extends React.Component {
-  currentUser: string = '';
   editor: monaco.editor.ICodeEditor;
   loginModalVisible: boolean = false;
 
-  state: {
-    showLoginModal: boolean,
-    loggedIn: boolean,
-    currentUser: string
-  };
+  state: AppState
 
   constructor() {
     super();
     this.state = {
       showLoginModal: false,
-      loggedIn: false,
-      currentUser: ''
+      user: undefined
     };
+  }
+
+  componentDidMount() {
+    // DB.Instance();
   }
 
   handleEditorDidMount = (editor: {}) => {
@@ -44,10 +47,9 @@ class App extends React.Component {
   loadUserCode = () => {
 
     // load code from db
-    if (this.state.currentUser) {
-      DB.Instance().getCode().then((code) => {
-        this.editor.setValue(code[this.state.currentUser]);
-      });
+    if (this.state.user) {
+      let newCode = this.state.user.getCurrentFileContents();
+      this.editor.setValue(newCode);
     } else {
       this.editor.setValue(
         `// Type your code here! Log in / register to save your work
@@ -71,37 +73,33 @@ let tom = new Turtle();`);
     let user: string = (document.getElementById(HTML_IDS.login_username) as HTMLInputElement).value;
     let pw: string = (document.getElementById(HTML_IDS.login_password) as HTMLInputElement).value;
 
-    DB.getUsers().then((userDoc) => {
-      if (userDoc['users'][user] === pw) {
-        // alert('yay');
-        this.setState({
-          currentUser: user,
-          loggedIn: true
-        });
-        this.loadUserCode();
-        this.closeLoginModal();
-      } else if (!userDoc['users'][user]) {
-        var confirm: string;
+    DB.getUser(user).then((userDoc: TurtleCoder) => {
 
-        do {
-          confirm = prompt(`Retype the password to create an account called: ${user}`) as string;
-        } while (pw !== confirm);
-
-        DB.addUser(user, pw);
-        this.setState({
-          currentUser: user,
-          loggedIn: true
-        });
-        this.loadUserCode();
-        this.closeLoginModal();
-      } else {
-        alert('Username / PW not correct.');
-      }
-    });
+      //      console.log('Got a user...');
+      this.setState({
+        user: TurtleCoder.fromObject(userDoc)
+      } as AppState);
+      this.loadUserCode();
+      this.closeLoginModal();
+    }).catch((reason) => {
+      // reason.reason === 'missing'
+      this.promptToCreateNewUser(user, pw);
+    })
   }
+
   saveEditorCode = () => {
-    let ts = this.editor.getValue();
-    DB.Instance().saveCode(this.state.currentUser, ts);
+    if (this.state.user) {
+
+      let ts = this.editor.getValue();
+
+      DB.saveCode(
+        this.state.user.name,
+        this.state.user.currentFile,
+        ts
+      );
+    } else {
+      alert('You must be logged in to save code.');
+    }
   }
 
   runEditorCode = () => {
@@ -151,8 +149,8 @@ let tom = new Turtle();`);
             toggleTurtlesFunction={TurtleCanvas.toggleTurtleVisibility}
             saveCode={this.saveEditorCode}
             loginFunction={this.openLoginModal}
-            loggedIn={this.state.loggedIn}
-            username={this.state.currentUser}
+            loggedIn={this.state.user ? true : false}
+            username={this.state.user ? this.state.user.name : ''}
           />
         </div>
         <div id="EditorAndCanvas">
@@ -161,12 +159,6 @@ let tom = new Turtle();`);
             height={editorHeight}
             language="typescript"
             theme="vs-dark"
-            value={
-              `// Type your code in here.
-
-let tom = new Turtle();
-
-`}
             options={{
               codeLens: false,
               lineNumbersMinChars: 3,
@@ -185,6 +177,30 @@ let tom = new Turtle();
         </div>
       </div>
     );
+  }
+
+  private promptToCreateNewUser(user: string, pw: string) {
+    var confirm: string;
+    do {
+      confirm = prompt(`Retype the password to create an account called: ${user}`) as string;
+    } while (pw !== confirm);
+
+    DB.addUser(user, pw).then((resp) => {
+      if (resp.ok) {
+
+        this.setState({
+          user: new TurtleCoder(user, pw)
+        });
+
+        alert(`Welcome! User '${user}' created.`);
+        this.loadUserCode();
+        this.closeLoginModal();
+
+      }
+    }).catch((reason) => {
+      console.log('Registration failure: ');
+      console.log(reason.reason);
+    });
   }
 }
 
