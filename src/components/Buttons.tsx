@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { TurtleCoder } from '../db';
+import { ToggleButton, ButtonToolbar, Button, DropdownButton, MenuItem } from 'react-bootstrap';
 // import { Appbar } from 'muicss/react';
 
 class Controls extends React.Component {
@@ -14,18 +15,27 @@ class Controls extends React.Component {
 
     render() {
         return (
-            <div id="controls">
+            <ButtonToolbar id="controls">
                 {this.props.user &&
                     (
-                        <select>
+                        /* <select>
                             {this.props.user.getFileNames().map(
                                 (file, index) =>
                                     <option key={index} value={file}>{file}</option>
 
                             )}
-                        </select>
+                        </select> */
+                        <DropdownButton title="Select File" id="fileSelect">
+                            {this.props.user.getFileNames().map(
+                                (file, index) =>
+                                    (<MenuItem>
+                                        {file}
+                                    </MenuItem>)
+                            )}
+                        </DropdownButton>
                     )
                 }
+
                 <Login
                     click={this.props.loginFunction}
                     loggedIn={this.props.user ? true : false}
@@ -34,18 +44,18 @@ class Controls extends React.Component {
                 <ToggleGrid click={this.props.toggleGridFunction} />
                 <ToggleTurtles click={this.props.toggleTurtlesFunction} />
                 <Save click={this.props.saveCode} />
-            </div>
+            </ButtonToolbar>
         );
     }
 }
 
-class Button extends React.Component {
+class ControlButton extends React.Component {
     props: {
         click: () => void;
     };
 }
 
-class Login extends Button {
+class Login extends ControlButton {
     props: {
         click: () => void;
         loggedIn: boolean;
@@ -59,9 +69,9 @@ class Login extends Button {
     render() {
         if (!this.props.loggedIn) {
             return (
-                <button onClick={this.props.click}>
+                <Button onClick={this.props.click}>
                     Log In / Register
-                </button>
+                </Button>
             );
         } else {
             return (<span>Hi, {this.props.username}</span>);
@@ -69,57 +79,57 @@ class Login extends Button {
     }
 }
 
-class Save extends Button {
+class Save extends ControlButton {
     constructor(props: { click: Function }) {
         super(props);
     }
 
     render() {
         return (
-            <button onClick={this.props.click}>
+            <Button className='btn btn-primary' onClick={this.props.click}>
                 Save Code
-            </button>
+            </Button>
         );
     }
 }
-class Play extends Button {
+class Play extends ControlButton {
     constructor(props: { click: Function }) {
         super(props);
     }
 
     render() {
         return (
-            <button onClick={this.props.click}>
+            <Button className='btn btn-primary' onClick={this.props.click}>
                 Run Code
-            </button>
+            </Button>
         );
     }
 }
 
-class ToggleGrid extends Button {
+class ToggleGrid extends ControlButton {
     constructor(props: { click: Function }) {
         super(props);
     }
     render() {
         return (
-            <button onClick={this.props.click}>
+            <Button muted={true} className='btn btn-primary' onClick={this.props.click}>
                 Show Grid
-            </button>
+            </Button>
         );
     }
 }
 
-class ToggleTurtles extends Button {
+class ToggleTurtles extends ControlButton {
     constructor(props: { click: Function }) {
         super(props);
     }
     render() {
         return (
-            <button onClick={this.props.click}>
+            <Button className='btn btn-primary' onClick={this.props.click}>
                 Show Turtles
-            </button>
+            </Button>
         );
     }
 }
 
-export { Play, Button, Controls };
+export { Play, ControlButton, Controls };
