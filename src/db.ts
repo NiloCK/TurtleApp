@@ -5,6 +5,12 @@ export class TurtleCodeFile {
     name: string;
     code: string;
     authors: Set<string>;
+
+    constructor(name: string, code: string, authors: Array<string>) {
+        this.name = name;
+        this.code = code;
+        this.authors = new Set(authors);
+    }
 }
 
 export class TurtleCoder {
@@ -19,7 +25,7 @@ export class TurtleCoder {
         this.name = name;
         this.pw = pw;
         this.code = {};
-        this.currentFile = 'asof';
+        this.currentFile = '';
     }
 
     toObject(): object {
@@ -29,6 +35,28 @@ export class TurtleCoder {
             code: this.code,
             currentFile: this.currentFile
         };
+    }
+
+    /**
+     * Adds a new file to the user's code book
+     */
+    newFile(): TurtleCodeFile {
+        var fileName: string = 'newFile';
+        let suffix: number = 1;
+
+        while (this.getFileNames().indexOf(fileName) >= 0) {
+            fileName = 'newFile' + suffix;
+            suffix++;
+        }
+
+        let codeFile = new TurtleCodeFile(
+            fileName,
+            `// ${fileName}: Type your code here!`,
+            [this.name]
+        );
+        this.code[fileName] = codeFile;
+
+        return codeFile;
     }
 
     static fromObject(data: any): TurtleCoder {
@@ -46,14 +74,10 @@ export class TurtleCoder {
         if (this.currentFile) {
             return this.code[this.currentFile];
         } else {
-            this.currentFile = 'newFile';
-            return {
-                name: 'firstFile',
-                authors: new Set(this.name),
-                code: `// Type your code here! Make sure to save your work as you go!
-            
-let ${this.name.replace(' ', '')} = new Turtle();`
-            }
+            let file: TurtleCodeFile = this.newFile();
+            this.currentFile = file.name;
+
+            return file;
         }
     }
 }
