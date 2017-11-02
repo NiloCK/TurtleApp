@@ -48,8 +48,8 @@ class App extends React.Component {
 
     // load code from db
     if (this.state.user) {
-      let newCode = this.state.user.getCurrentFileContents();
-      this.editor.setValue(newCode);
+      let newCode = this.state.user.getCurrentFile();
+      this.editor.setValue(newCode.code);
     } else {
       this.editor.setValue(
         `// Type your code here! Log in / register to save your work
@@ -94,8 +94,11 @@ let tom = new Turtle();`);
 
       DB.saveCode(
         this.state.user.name,
-        this.state.user.currentFile,
-        ts
+        {
+          name: this.state.user.currentFile,
+          code: ts,
+          authors: new Set(this.state.user.name)
+        }
       );
     } else {
       alert('You must be logged in to save code.');
@@ -149,8 +152,7 @@ let tom = new Turtle();`);
             toggleTurtlesFunction={TurtleCanvas.toggleTurtleVisibility}
             saveCode={this.saveEditorCode}
             loginFunction={this.openLoginModal}
-            loggedIn={this.state.user ? true : false}
-            username={this.state.user ? this.state.user.name : ''}
+            user={this.state.user}
           />
         </div>
         <div id="EditorAndCanvas">

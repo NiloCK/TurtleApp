@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { TurtleCoder } from '../db';
 // import { Appbar } from 'muicss/react';
 
 class Controls extends React.Component {
@@ -8,17 +9,27 @@ class Controls extends React.Component {
         toggleTurtlesFunction: () => void;
         saveCode: () => void;
         loginFunction: () => void;
-        loggedIn: boolean;
-        username: string;
+        user?: TurtleCoder;
     };
 
     render() {
         return (
             <div id="controls">
+                {this.props.user &&
+                    (
+                        <select>
+                            {this.props.user.getFileNames().map(
+                                (file, index) =>
+                                    <option key={index} value={file}>{file}</option>
+
+                            )}
+                        </select>
+                    )
+                }
                 <Login
                     click={this.props.loginFunction}
-                    loggedIn={this.props.loggedIn}
-                    username={this.props.username} />
+                    loggedIn={this.props.user ? true : false}
+                    username={this.props.user ? this.props.user.name : ''} />
                 <Play click={this.props.playFunction} />
                 <ToggleGrid click={this.props.toggleGridFunction} />
                 <ToggleTurtles click={this.props.toggleTurtlesFunction} />
@@ -27,7 +38,6 @@ class Controls extends React.Component {
         );
     }
 }
-
 
 class Button extends React.Component {
     props: {

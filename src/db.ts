@@ -1,11 +1,17 @@
 import * as pouch from 'pouchdb-browser';
 // const pouch = require('pouchdb-browser');
 
+export class TurtleCodeFile {
+    name: string;
+    code: string;
+    authors: Set<string>;
+}
+
 export class TurtleCoder {
     name: string;
     pw: string;
     code: {
-        [index: string]: string;
+        [index: string]: TurtleCodeFile;
     }
     currentFile: string;
 
@@ -13,7 +19,7 @@ export class TurtleCoder {
         this.name = name;
         this.pw = pw;
         this.code = {};
-        this.currentFile = '';
+        this.currentFile = 'asof';
     }
 
     toObject(): object {
@@ -32,14 +38,22 @@ export class TurtleCoder {
         return ret;
     }
 
-    getCurrentFileContents(): string {
+    getFileNames(): Array<string> {
+        return Object.keys(this.code);
+    }
+
+    getCurrentFile(): TurtleCodeFile {
         if (this.currentFile) {
             return this.code[this.currentFile];
         } else {
             this.currentFile = 'newFile';
-            return `// Type your code here! Make sure to save your work as you go!
+            return {
+                name: 'firstFile',
+                authors: new Set(this.name),
+                code: `// Type your code here! Make sure to save your work as you go!
             
 let ${this.name.replace(' ', '')} = new Turtle();`
+            }
         }
     }
 }
@@ -108,10 +122,10 @@ export class DB {
         // });
     }
 
-    public static saveCode(user: string, fileName: string, ts: string) {
+    public static saveCode(user: string, code: TurtleCodeFile) {
         DB.Instance().remoteDB.get(user).then((userDoc) => {
             // 'currentUser' here instead of MrK
-            userDoc['code'][fileName] = ts;
+            userDoc['code'][code.name] = code;
             return DB.Instance().remoteDB.put(userDoc);
         }).catch((reason) => {
             console.log('Save Failure: ');
