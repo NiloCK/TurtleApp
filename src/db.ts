@@ -40,18 +40,23 @@ export class TurtleCoder {
     /**
      * Adds a new file to the user's code book
      */
-    newFile(): TurtleCodeFile {
-        var fileName: string = 'newFile';
-        let suffix: number = 1;
+    newFile(newFileName?: string): TurtleCodeFile {
+        var fileName: string = newFileName || generateName(this.getFileNames());
 
-        while (this.getFileNames().indexOf(fileName) >= 0) {
-            fileName = 'newFile' + suffix;
-            suffix++;
+        function generateName(currentNames: Array<string>): string {
+            let fileName: string = 'newFile';
+            let suffix: number = 1;
+
+            while (currentNames.indexOf(fileName) >= 0) {
+                fileName = 'newFile' + suffix;
+                suffix++;
+            }
+            return fileName;
         }
 
         let codeFile = new TurtleCodeFile(
             fileName,
-            `// ${fileName}: Type your code here!`,
+            `// ${fileName}`,
             [this.name]
         );
         this.code[fileName] = codeFile;
@@ -146,10 +151,11 @@ export class DB {
         // });
     }
 
-    public static saveCode(user: string, code: TurtleCodeFile) {
-        DB.Instance().remoteDB.get(user).then((userDoc) => {
+    public static saveCode(user: string, code: TurtleCodeFile): Promise<void> {
+        return DB.Instance().remoteDB.get(user).then((userDoc) => {
             // 'currentUser' here instead of MrK
             userDoc['code'][code.name] = code;
+            userDoc['currentFile'] = code.name;
             return DB.Instance().remoteDB.put(userDoc);
         }).catch((reason) => {
             console.log('Save Failure: ');

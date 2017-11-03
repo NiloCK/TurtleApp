@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { TurtleCoder } from '../db';
-import { ToggleButton, ButtonToolbar, Button, DropdownButton, MenuItem } from 'react-bootstrap';
+import { Glyphicon, SplitButton, ToggleButton, ButtonToolbar, Button, DropdownButton, MenuItem } from 'react-bootstrap';
 // import { Appbar } from 'muicss/react';
 
 class Controls extends React.Component {
@@ -10,6 +10,8 @@ class Controls extends React.Component {
         toggleTurtlesFunction: () => void;
         saveCode: () => void;
         loginFunction: () => void;
+        loadFile: (filename: string) => void;
+        newFile: () => void;
         user?: TurtleCoder;
     };
 
@@ -18,21 +20,29 @@ class Controls extends React.Component {
             <ButtonToolbar id="controls">
                 {this.props.user &&
                     (
-                        /* <select>
-                            {this.props.user.getFileNames().map(
-                                (file, index) =>
-                                    <option key={index} value={file}>{file}</option>
+                        <SplitButton title={this.props.user.currentFile} id="fileSelect">
 
-                            )}
-                        </select> */
-                        <DropdownButton title="Select File" id="fileSelect">
                             {this.props.user.getFileNames().map(
                                 (file, index) =>
-                                    (<MenuItem>
+                                    (<MenuItem
+                                        key={index}
+                                        eventKey={index}
+                                        title="Load this file..."
+                                        onClick={
+                                            () => { this.props.loadFile(file); }
+                                        }>
                                         {file}
                                     </MenuItem>)
                             )}
-                        </DropdownButton>
+
+                            <MenuItem divider />
+
+                            <MenuItem title="Create New File" onClick={this.props.newFile}>
+                                {/* <Glyphicon glyph="file-plus" /> */}
+                                Create New File
+                            </MenuItem>
+
+                        </SplitButton>
                     )
                 }
 
