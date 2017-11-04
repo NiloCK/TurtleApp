@@ -12,7 +12,7 @@ export class LoginModal extends React.Component {
         show: boolean;
         onHide: () => void;
         login: () => void;
-    }
+    };
 
     render() {
         return (
@@ -41,6 +41,6 @@ export class LoginModal extends React.Component {
                     <button className="btn btn-primary" onClick={this.props.login}>Log In</button>
                 </Modal.Footer>
             </Modal>
-        )
+        );
     }
 }

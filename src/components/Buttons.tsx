@@ -40,7 +40,7 @@ class Controls extends React.Component {
               <MenuItem title="Create New File" onClick={this.props.newFile}>
                 {/* <Glyphicon glyph="file-plus" /> */}
                 Create New File
-       </MenuItem>
+              </MenuItem>
 
             </SplitButton>
           )
@@ -82,7 +82,7 @@ class Login extends ControlButton {
       return (
         <Button onClick={this.props.click}>
           Log In / Register
-  </Button>
+        </Button>
       );
     } else {
       return (<span>Hi, {this.props.username}</span>);
@@ -99,7 +99,7 @@ class Save extends ControlButton {
     return (
       <Button className="btn btn-primary" onClick={this.props.click}>
         Save Code
-  </Button>
+      </Button>
     );
   }
 }
@@ -112,7 +112,7 @@ class Play extends ControlButton {
     return (
       <Button className="btn btn-primary" onClick={this.props.click}>
         Run Code
-  </Button>
+      </Button>
     );
   }
 }
@@ -125,7 +125,7 @@ class ToggleGrid extends ControlButton {
     return (
       <Button muted={true} className="btn btn-primary" onClick={this.props.click}>
         Show Grid
-  </Button>
+      </Button>
     );
   }
 }

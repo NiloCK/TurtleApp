@@ -15,7 +15,7 @@ export const enum HTML_IDS {
   login_username = 'loginField',
   login_password = 'passwordField',
   new_filename = 'newFilenameField'
-};
+}
 
 class AppState {
   showLoginModal: boolean;
