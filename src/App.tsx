@@ -2,6 +2,7 @@ import * as React from 'react';
 import './App.css';
 import MonacoEditor from 'react-monaco-editor';
 import { Play, Controls } from './components/Buttons';
+import { LoginModal } from './components/Login';
 import TurtleCanvas from './components/turtleCanvas';
 import ProgramCompiler from './ProgramExecution';
 import { DB, TurtleCoder } from './db';
@@ -10,10 +11,10 @@ import { FormControl, FormGroup, ControlLabel, Modal } from 'react-bootstrap';
 
 const logo = require('./logo.svg');
 
-const HTML_IDS = {
-  login_username: 'loginField',
-  login_password: 'passwordField',
-  new_filename: 'newFilenameField'
+export const enum HTML_IDS {
+  login_username = 'loginField',
+  login_password = 'passwordField',
+  new_filename = 'newFilenameField'
 };
 
 class AppState {
@@ -160,31 +161,11 @@ let tom = new Turtle();`);
 
     return (
       <div className="App">
-        <Modal
+        <LoginModal
           show={this.state.showLoginModal}
           onHide={this.closeLoginModal}
-          onShow={() => {
-            (document.getElementById(HTML_IDS.login_username) as HTMLElement).focus();
-          }}
-        >
-          <Modal.Body>
-            <FormGroup>
-              <ControlLabel >Username: </ControlLabel>
-              <FormControl
-                id={HTML_IDS.login_username}
-                type="text"
-              />
-              <ControlLabel >Password: </ControlLabel>
-              <FormControl
-                id={HTML_IDS.login_password}
-                type="password"
-              />
-            </FormGroup>
-          </Modal.Body>
-          <Modal.Footer>
-            <button className="btn btn-primary" onClick={this.login}>Log In</button>
-          </Modal.Footer>
-        </Modal>
+          login={this.login}
+        />
         <Modal
           show={this.state.showNewFileModal}
           onHide={() => {
