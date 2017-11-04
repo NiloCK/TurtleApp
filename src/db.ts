@@ -95,7 +95,7 @@ export class DB {
     private localDB: PouchDB.Database;
     private remoteDB: PouchDB.Database;
 
-    public static Instance(): DB {
+    private static Instance(): DB {
         if (this.instance) {
             return this.instance;
         } else {
@@ -137,11 +137,6 @@ export class DB {
                 alert('Saved!');
             }
         });
-    }
-
-    public getCode(): Promise<string> {
-        // let ret: string;
-        return this.localDB.get('code');
     }
 
     private constructor() {
