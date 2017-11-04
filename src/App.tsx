@@ -14,6 +14,7 @@ const logo = require('./logo.svg');
 export const enum HTML_IDS {
   login_username = 'loginField',
   login_password = 'passwordField',
+  login_retype_password = 'retypePasswordField',
   new_filename = 'newFilenameField'
 }
 
@@ -108,7 +109,7 @@ let tom = new Turtle();`);
     let user: string = (document.getElementById(HTML_IDS.login_username) as HTMLInputElement).value;
     let pw: string = (document.getElementById(HTML_IDS.login_password) as HTMLInputElement).value;
 
-    this.loadUserData(user).catch((reason) => {
+    this.loadUserData(user, pw).catch((reason) => {
       // reason.reason === 'missing'
       this.promptToCreateNewUser(user, pw);
     });
@@ -128,7 +129,7 @@ let tom = new Turtle();`);
         }
       ).then(() => {
         if (this.state.user) {
-          this.loadUserData(this.state.user.name);
+          this.loadUserData(this.state.user.name, this.state.user.pw);
         }
       });
     } else {
@@ -165,6 +166,7 @@ let tom = new Turtle();`);
           show={this.state.showLoginModal}
           onHide={this.closeLoginModal}
           login={this.login}
+          register={this.registerNewUser}
         />
         <Modal
           show={this.state.showNewFileModal}
@@ -230,11 +232,9 @@ let tom = new Turtle();`);
     );
   }
 
-  private promptToCreateNewUser(user: string, pw: string) {
-    var confirm: string;
-    do {
-      confirm = prompt(`Retype the password to create an account called: ${user}`) as string;
-    } while (pw !== confirm);
+  registerNewUser = () => {
+    let user: string = (document.getElementById(HTML_IDS.login_username) as HTMLInputElement).value;
+    let pw: string = (document.getElementById(HTML_IDS.login_password) as HTMLInputElement).value;
 
     DB.addUser(user, pw).then((resp) => {
       if (resp.ok) {
@@ -246,21 +246,49 @@ let tom = new Turtle();`);
         alert(`Welcome! User '${user}' created.`);
         this.loadUserCurrentFile();
         this.closeLoginModal();
-
       }
-    }).catch((reason) => {
-      alert(`Registration failure: ${reason.reason}`);
+    }).catch((reason: PouchDB.Core.Error) => {
+
+      if (reason.reason === "Document update conflict.") {
+        alert(`Registration failure: a user with this name already exists.`);
+      }
+      else {
+        alert(`Registration failure: 
+        Reason: ${reason.reason}
+        id: ${reason.id}
+        message: ${reason.message}
+        error: ${reason.error}
+        name: ${reason.name}
+        
+        Please let me know that this happened!`);
+      }
+
     });
   }
 
-  private loadUserData(user: string) {
+  private promptToCreateNewUser(user: string, pw: string) {
+    // var confirm: string;
+    // do {
+    //   confirm = prompt(`Retype the password to create an account called: ${user}`) as string;
+    // } while (pw !== confirm);
+
+    alert(`No user with that name exists! Click 'Register' above to register this account.`);
+
+    //this.registerNewUser();
+  }
+
+  private loadUserData(user: string, pw: string) {
     return DB.getUser(user).then((userDoc: TurtleCoder) => {
       //      console.log('Got a user...');
-      this.setState({
-        user: TurtleCoder.fromObject(userDoc)
-      } as AppState);
-      this.loadUserCurrentFile();
-      this.closeLoginModal();
+      if (userDoc['pw'] != pw) {
+        alert(`Password incorrect. Please try agian.`);
+      } else {
+        this.setState({
+          user: TurtleCoder.fromObject(userDoc)
+        } as AppState);
+        this.loadUserCurrentFile();
+        this.closeLoginModal();
+      }
     });
   }
 }
