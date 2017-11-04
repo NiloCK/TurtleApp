@@ -1,6 +1,15 @@
 import * as React from 'react';
 import { TurtleCoder } from '../db';
-import { Glyphicon, SplitButton, ToggleButton, ButtonToolbar, Button, DropdownButton, MenuItem } from 'react-bootstrap';
+import {
+  Glyphicon,
+  SplitButton,
+  ToggleButton,
+  ButtonToolbar,
+  Button,
+  DropdownButton,
+  MenuItem,
+  Badge
+} from 'react-bootstrap';
 // import { Appbar } from 'muicss/react';
 
 class Controls extends React.Component {
@@ -85,7 +94,9 @@ class Login extends ControlButton {
         </Button>
       );
     } else {
-      return (<span>Hi, {this.props.username}</span>);
+      return (
+        <Badge style={{ 'margin-left': '5px' }}>{this.props.username}</Badge>
+      );
     }
   }
 }
