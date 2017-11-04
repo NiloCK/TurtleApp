@@ -26,7 +26,7 @@ class App extends React.Component {
   editor: monaco.editor.ICodeEditor;
   loginModalVisible: boolean = false;
 
-  state: AppState
+  state: AppState;
 
   constructor() {
     super();
@@ -66,7 +66,7 @@ let tom = new Turtle();`);
       this.editor.setValue(this.state.user.getCurrentFile().code);
       this.forceUpdate();
     } else {
-      throw new Error("File not found in this user's data");
+      throw new Error(`File not found in this user's data`);
     }
   }
 
@@ -74,9 +74,9 @@ let tom = new Turtle();`);
     if (this.state.user) {
       this.setState({
         showNewFileModal: true
-      } as AppState)
+      } as AppState);
     } else {
-      throw new Error("Must be logged in to create a file");
+      throw new Error(`Must be logged in to create a file`);
     }
   }
 
@@ -110,7 +110,7 @@ let tom = new Turtle();`);
     this.loadUserData(user).catch((reason) => {
       // reason.reason === 'missing'
       this.promptToCreateNewUser(user, pw);
-    })
+    });
   }
 
   saveEditorCode = () => {
@@ -123,13 +123,13 @@ let tom = new Turtle();`);
         {
           name: this.state.user.currentFile,
           code: ts,
-          authors: new Set(this.state.user.name)
+          authors: new Set([this.state.user.name])
         }
       ).then(() => {
-        if (this.state.user)
+        if (this.state.user) {
           this.loadUserData(this.state.user.name);
+        }
       });
-
     } else {
       alert('You must be logged in to save code.');
     }
@@ -172,15 +172,17 @@ let tom = new Turtle();`);
               <ControlLabel >Username: </ControlLabel>
               <FormControl
                 id={HTML_IDS.login_username}
-                type="text" />
+                type="text"
+              />
               <ControlLabel >Password: </ControlLabel>
               <FormControl
                 id={HTML_IDS.login_password}
-                type="password" />
+                type="password"
+              />
             </FormGroup>
           </Modal.Body>
           <Modal.Footer>
-            <button className='btn btn-primary' onClick={this.login}>Log In</button>
+            <button className="btn btn-primary" onClick={this.login}>Log In</button>
           </Modal.Footer>
         </Modal>
         <Modal
@@ -188,22 +190,22 @@ let tom = new Turtle();`);
           onHide={() => {
             this.setState({
               showNewFileModal: false
-            })
-          }}>
+            });
+          }}
+        >
           <Modal.Body>
             <FormGroup>
               <ControlLabel>
                 New File Name:
               </ControlLabel>
               <FormControl
-                type='text'
+                type="text"
                 id={HTML_IDS.new_filename}
-              >
-              </FormControl>
+              />
             </FormGroup>
           </Modal.Body>
           <Modal.Footer>
-            <button className='btn btn-primary' onClick={this.newFile}>Create File</button>
+            <button className="btn btn-primary" onClick={this.newFile}>Create File</button>
           </Modal.Footer>
         </Modal>
 
@@ -266,8 +268,7 @@ let tom = new Turtle();`);
 
       }
     }).catch((reason) => {
-      console.log('Registration failure: ');
-      console.log(reason.reason);
+      alert(`Registration failure: ${reason.reason}`);
     });
   }
 

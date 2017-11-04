@@ -24,18 +24,18 @@ class Controls extends React.Component {
 
                             {this.props.user.getFileNames().map(
                                 (file, index) =>
-                                    (<MenuItem
-                                        key={index}
-                                        eventKey={index}
-                                        title="Load this file..."
-                                        onClick={
-                                            () => { this.props.loadFile(file); }
-                                        }>
-                                        {file}
-                                    </MenuItem>)
+                                    (
+                                        <MenuItem
+                                            key={index}
+                                            eventKey={index}
+                                            title="Load this file..."
+                                            onClick={() => { this.props.loadFile(file); }}
+                                        >
+                                            {file}
+                                        </MenuItem>)
                             )}
 
-                            <MenuItem divider />
+                            <MenuItem divider={true} />
 
                             <MenuItem title="Create New File" onClick={this.props.newFile}>
                                 {/* <Glyphicon glyph="file-plus" /> */}
@@ -49,7 +49,8 @@ class Controls extends React.Component {
                 <Login
                     click={this.props.loginFunction}
                     loggedIn={this.props.user ? true : false}
-                    username={this.props.user ? this.props.user.name : ''} />
+                    username={this.props.user ? this.props.user.name : ''}
+                />
                 <Play click={this.props.playFunction} />
                 <ToggleGrid click={this.props.toggleGridFunction} />
                 <ToggleTurtles click={this.props.toggleTurtlesFunction} />
@@ -70,7 +71,7 @@ class Login extends ControlButton {
         click: () => void;
         loggedIn: boolean;
         username: string;
-    }
+    };
 
     constructor(props: { click: Function }) {
         super(props);
@@ -96,7 +97,7 @@ class Save extends ControlButton {
 
     render() {
         return (
-            <Button className='btn btn-primary' onClick={this.props.click}>
+            <Button className="btn btn-primary" onClick={this.props.click}>
                 Save Code
             </Button>
         );
@@ -109,7 +110,7 @@ class Play extends ControlButton {
 
     render() {
         return (
-            <Button className='btn btn-primary' onClick={this.props.click}>
+            <Button className="btn btn-primary" onClick={this.props.click}>
                 Run Code
             </Button>
         );
@@ -122,7 +123,7 @@ class ToggleGrid extends ControlButton {
     }
     render() {
         return (
-            <Button muted={true} className='btn btn-primary' onClick={this.props.click}>
+            <Button muted={true} className="btn btn-primary" onClick={this.props.click}>
                 Show Grid
             </Button>
         );
@@ -135,7 +136,7 @@ class ToggleTurtles extends ControlButton {
     }
     render() {
         return (
-            <Button className='btn btn-primary' onClick={this.props.click}>
+            <Button className="btn btn-primary" onClick={this.props.click}>
                 Show Turtles
             </Button>
         );
