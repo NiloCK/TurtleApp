@@ -4,16 +4,54 @@ import * as pouch from 'pouchdb-browser';
 export class TurtleCodeFile {
     name: string;
     code: string;
-    authors: Set<string>;
+    authors: Array<string>;
 
-    constructor(name: string, code: string, authors: Array<string>) {
+    constructor(name: string, code: string, author?: string) {
         this.name = name;
         this.code = code;
-        this.authors = new Set(authors);
+        this.authors = new Array<string>();
+        if (author) {
+            this.authors.push(author);
+        }
     }
+
+    static addAuthor(codeFile: TurtleCodeFile, author: string) {
+        if (codeFile.authors.indexOf(author) === -1) {
+            codeFile.authors.push(author);
+            codeFile.authors.sort();
+        }
+    }
+
+    static fromObject(data: any): TurtleCodeFile {
+        let ret = new TurtleCodeFile(
+            data.name,
+            data.code
+        );
+        return ret;
+    }
+
 }
 
 // todo: Make an authorlist class that's amenable to JSON serialization
+
+export class AuthorList {
+    authors: Array<string>;
+
+    constructor() {
+        this.authors = new Array<string>();
+    }
+
+    addAuthor(name: string) {
+        if (this.authors.indexOf(name) === -1) {
+            this.authors.push(name);
+            this.authors.sort();
+        }
+    }
+
+    toJSON() {
+        return JSON.stringify(this.authors);
+    }
+}
 
 export class TurtleCoder {
     name: string;
@@ -26,7 +64,19 @@ export class TurtleCoder {
     static fromObject(data: any): TurtleCoder {
         let ret = new TurtleCoder(data.name, data.pw);
         ret.currentFile = data.currentFile;
-        ret.code = data.code;
+        // ret.code = data.code;
+        Object.keys(data.code).forEach((file: any) => {
+            let codeFile = new TurtleCodeFile(
+                data.code[file].name,
+                data.code[file].code
+            );
+            data.code[file].authors.forEach((author: string) => {
+                TurtleCodeFile.addAuthor(codeFile, author);
+            })
+
+            ret.code[file] = codeFile;
+        });
+
         return ret;
     }
 
@@ -66,7 +116,7 @@ export class TurtleCoder {
         let codeFile = new TurtleCodeFile(
             fileName,
             `// ${fileName}`,
-            [this.name]
+            this.name
         );
         this.code[fileName] = codeFile;
 
@@ -94,15 +144,6 @@ export class DB {
 
     private localDB: PouchDB.Database;
     private remoteDB: PouchDB.Database;
-
-    private static Instance(): DB {
-        if (this.instance) {
-            return this.instance;
-        } else {
-            this.instance = new this();
-            return this.instance;
-        }
-    }
 
     public static getUser(username: string): Promise<TurtleCoder> {
         return DB.Instance().remoteDB.get(username);
@@ -137,6 +178,15 @@ export class DB {
                 alert('Saved!');
             }
         });
+    }
+
+    private static Instance(): DB {
+        if (this.instance) {
+            return this.instance;
+        } else {
+            this.instance = new this();
+            return this.instance;
+        }
     }
 
     private constructor() {

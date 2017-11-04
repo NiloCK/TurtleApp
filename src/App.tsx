@@ -5,7 +5,7 @@ import { Play, Controls } from './components/Buttons';
 import { LoginModal } from './components/Login';
 import TurtleCanvas from './components/turtleCanvas';
 import ProgramCompiler from './ProgramExecution';
-import { DB, TurtleCoder } from './db';
+import { DB, TurtleCoder, TurtleCodeFile, AuthorList } from './db';
 import { FormControl, FormGroup, ControlLabel, Modal } from 'react-bootstrap';
 // import Student from './student';
 
@@ -117,15 +117,19 @@ let tom = new Turtle();`);
 
   saveEditorCode = () => {
     if (this.state.user) {
+      let { user } = this.state;
+      // let authors = user.getCurrentFile().authors;
+      let constructedUser = TurtleCoder.fromObject(user);
+      TurtleCodeFile.addAuthor(constructedUser.getCurrentFile(), user.name);
 
       let ts = this.editor.getValue();
 
       DB.saveCode(
         this.state.user.name,
         {
-          name: this.state.user.currentFile,
+          name: user.currentFile,
           code: ts,
-          authors: new Set([this.state.user.name])
+          authors: constructedUser.getCurrentFile().authors
         }
       ).then(() => {
         if (this.state.user) {
@@ -249,7 +253,7 @@ let tom = new Turtle();`);
       }
     }).catch((reason: PouchDB.Core.Error) => {
 
-      if (reason.reason === "Document update conflict.") {
+      if (reason.reason === 'Document update conflict.') {
         alert(`Registration failure: a user with this name already exists.`);
       }
       else {
@@ -280,7 +284,7 @@ let tom = new Turtle();`);
   private loadUserData(user: string, pw: string) {
     return DB.getUser(user).then((userDoc: TurtleCoder) => {
       //      console.log('Got a user...');
-      if (userDoc['pw'] != pw) {
+      if (userDoc.pw !== pw) {
         alert(`Password incorrect. Please try agian.`);
       } else {
         this.setState({
