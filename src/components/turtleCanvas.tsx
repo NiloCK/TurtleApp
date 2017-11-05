@@ -40,7 +40,7 @@ class TurtleCanvas extends React.Component {
     componentDidMount() {
         let gridCanvas: HTMLCanvasElement = TurtleCanvas.getGridCanvas();
         let ctx: CanvasRenderingContext2D = gridCanvas.getContext('2d') as CanvasRenderingContext2D;
-        ctx.strokeStyle = 'rgb(200,200,200)';
+        ctx.strokeStyle = 'rgba(0,0,0,.075)';
         ctx.fillStyle = 'grey';
         ctx.font = '15px sans-serif';
 
@@ -99,7 +99,6 @@ class TurtleCanvas extends React.Component {
                     width={this.props.width}
                     height={this.props.height}
                 />
-
             </div>
         );
     }
