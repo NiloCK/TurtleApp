@@ -5,6 +5,7 @@ class TurtleCanvas extends React.Component {
     props: {
         height: number;
         width: number;
+        children: React.ReactChild
     };
     static getGridCanvas(): HTMLCanvasElement {
         return document.getElementById('gridCanvas') as HTMLCanvasElement;
@@ -99,6 +100,7 @@ class TurtleCanvas extends React.Component {
                     width={this.props.width}
                     height={this.props.height}
                 />
+                {this.props.children}
             </div>
         );
     }
