@@ -26,7 +26,7 @@ class Controls extends React.Component {
 
   render() {
     return (
-      <ButtonToolbar id="controls">
+      <ButtonToolbar>
         {this.props.user &&
           (
             <SplitButton title={this.props.user.currentFile} id="fileSelect">
@@ -38,7 +38,7 @@ class Controls extends React.Component {
                       key={index}
                       eventKey={index}
                       title="Load this file..."
-                      onClick={() => { this.props.loadFile(file); }}
+                      onSelect={() => { this.props.loadFile(file); }}
                     >
                       {file}
                     </MenuItem>)
