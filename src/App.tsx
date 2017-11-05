@@ -6,7 +6,17 @@ import { LoginModal } from './components/Login';
 import TurtleCanvas from './components/turtleCanvas';
 import ProgramCompiler from './ProgramExecution';
 import { DB, TurtleCoder, TurtleCodeFile, AuthorList } from './db';
-import { FormControl, FormGroup, ControlLabel, Modal } from 'react-bootstrap';
+import {
+  FormControl,
+  FormGroup,
+  ControlLabel,
+  Modal,
+  Label,
+  SplitButton,
+  Navbar,
+  Nav,
+  NavItem
+} from 'react-bootstrap';
 // import Student from './student';
 
 const logo = require('./logo.svg');
@@ -15,7 +25,8 @@ export const enum HTML_IDS {
   login_username = 'loginField',
   login_password = 'passwordField',
   login_retype_password = 'retypePasswordField',
-  new_filename = 'newFilenameField'
+  new_filename = 'newFilenameField',
+  appheader_file_browser = 'fileBrowser'
 }
 
 class AppState {
@@ -196,20 +207,39 @@ let tom = new Turtle();`);
           </Modal.Footer>
         </Modal>
 
-        <div className="App-header">
+        <Navbar staticTop style={{ marginBottom: '0px' }}>
           {/* <img src={logo} className="App-logo" alt="logo" /> */}
-          <h2>Welcome to the RLN Programming Club!</h2>
-          <Controls
-            playFunction={this.runEditorCode}
-            toggleGridFunction={TurtleCanvas.toggleGridVisibility}
-            toggleTurtlesFunction={TurtleCanvas.toggleTurtleVisibility}
-            saveCode={this.saveEditorCode}
-            loginFunction={this.openLoginModal}
-            loadFile={this.loadFile}
-            newFile={this.newFileDialog}
-            user={this.state.user}
-          />
-        </div>
+          <Navbar.Header >
+            <Navbar.Brand>
+              Welcome to the RLN Programming Club!
+            </Navbar.Brand>
+          </Navbar.Header>
+          <Nav>
+            <Navbar.Form>
+              <SplitButton
+                title='Browse our code!'
+                id={HTML_IDS.appheader_file_browser}
+              >
+              </SplitButton>
+            </Navbar.Form>
+          </Nav>
+          <Nav pullRight>
+            <Navbar.Form>
+              <NavItem>
+                <Controls
+                  playFunction={this.runEditorCode}
+                  toggleGridFunction={TurtleCanvas.toggleGridVisibility}
+                  toggleTurtlesFunction={TurtleCanvas.toggleTurtleVisibility}
+                  saveCode={this.saveEditorCode}
+                  loginFunction={this.openLoginModal}
+                  loadFile={this.loadFile}
+                  newFile={this.newFileDialog}
+                  user={this.state.user}
+                />
+              </NavItem>
+            </Navbar.Form>
+          </Nav>
+        </Navbar>
         <div id="EditorAndCanvas">
           <MonacoEditor
             width={editorWidth}
@@ -230,9 +260,10 @@ let tom = new Turtle();`);
           <TurtleCanvas
             width={editorWidth}
             height={editorHeight}
+            children={""}
           />
         </div>
-      </div>
+      </div >
     );
   }
 
@@ -271,14 +302,7 @@ let tom = new Turtle();`);
   }
 
   private promptToCreateNewUser(user: string, pw: string) {
-    // var confirm: string;
-    // do {
-    //   confirm = prompt(`Retype the password to create an account called: ${user}`) as string;
-    // } while (pw !== confirm);
-
     alert(`No user with that name exists! Click 'Register' above to register this account.`);
-
-    //this.registerNewUser();
   }
 
   private loadUserData(user: string, pw: string) {
