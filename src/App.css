@@ -5,12 +5,7 @@
 .react-monaco-editor-container {
   text-align: left;
 }
-#controls{
-  text-align: right;
-  align-content: right;
-  display: inline;
-  float: right; 
-}
+
 #EditorAndCanvas {
   display: flex;
   flex-direction: row;
