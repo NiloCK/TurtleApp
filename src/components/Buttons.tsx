@@ -63,7 +63,11 @@ class Controls extends React.Component {
         <Play click={this.props.playFunction} />
         <ToggleGrid click={this.props.toggleGridFunction} />
         <ToggleTurtles click={this.props.toggleTurtlesFunction} />
-        <Save click={this.props.saveCode} />
+        {this.props.user ?
+          <Save click={this.props.saveCode} />
+          :
+          ""
+        }
       </ButtonToolbar>
     );
   }
