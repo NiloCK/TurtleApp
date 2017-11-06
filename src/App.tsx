@@ -15,6 +15,7 @@ import {
   SplitButton,
   Navbar,
   Nav,
+  Button,
   NavItem
 } from 'react-bootstrap';
 // import Student from './student';
@@ -32,6 +33,8 @@ export const enum HTML_IDS {
 class AppState {
   showLoginModal: boolean;
   showNewFileModal: boolean;
+  editingMode: boolean;
+  openedFile?: TurtleCodeFile;
   user?: TurtleCoder;
 }
 
@@ -46,8 +49,20 @@ class App extends React.Component {
     this.state = {
       showNewFileModal: false,
       showLoginModal: false,
+      editingMode: true,
+      openedFile: undefined,
       user: undefined
     };
+  }
+
+  setState(s: { editingMode?: boolean } | any) {
+    super.setState(s);
+
+    if (typeof s.editingMode !== 'undefined') {
+      this.editor.updateOptions({
+        readOnly: !s.editingMode
+      });
+    }
   }
 
   componentDidMount() {
@@ -64,6 +79,12 @@ class App extends React.Component {
 
     if (this.state.user) {
       let newCode = this.state.user.getCurrentFile();
+      this.setState({
+        editingMode: true
+      } as AppState);
+      this.editor.updateOptions({
+        readOnly: false
+      });
       this.editor.setValue(newCode.code);
     } else {
       this.editor.setValue(
@@ -159,7 +180,6 @@ let tom = new Turtle();`);
 
     // alert(js);
     eval(js);
-    // new ProgramRunner(this.getEditorCode());
   }
   clearTurtleCanvas = () => {
     let cvs = document.getElementById('turtleCanvas') as HTMLCanvasElement;
@@ -216,11 +236,14 @@ let tom = new Turtle();`);
           </Navbar.Header>
           <Nav>
             <Navbar.Form>
-              <SplitButton
-                title='Browse our code!'
+              <Button
+                title='Browse our code - loads a random student file in readonly mode.'
                 id={HTML_IDS.appheader_file_browser}
+
+                onClick={this.getRandomFile}
               >
-              </SplitButton>
+                Load a random file!
+              </Button>
             </Navbar.Form>
           </Nav>
           <Nav pullRight>
@@ -252,7 +275,8 @@ let tom = new Turtle();`);
               /* minimap: { enabled: false }, */
               /* showFoldingControls: "always", */
               snippetSuggestions: 'none',
-              wordBasedSuggestions: false
+              wordBasedSuggestions: false,
+              readOnly: !this.state.editingMode
             }}
             text-align="left"
             editorDidMount={this.handleEditorDidMount}
@@ -260,11 +284,56 @@ let tom = new Turtle();`);
           <TurtleCanvas
             width={editorWidth}
             height={editorHeight}
-            children={""}
-          />
+          >
+            {
+              (
+                this.state.openedFile ?
+                  <h3>
+                    <Label>
+                      {this.state.openedFile.authors[
+                        this.state.openedFile.authors.length - 1
+                      ]} / {this.state.openedFile.name}
+                    </Label>
+                  </h3>
+                  :
+                  ""
+              )
+            }
+
+          </TurtleCanvas>
+
         </div>
       </div >
     );
+  }
+
+  getRandomFile = () => {
+    console.log('am I clicked??');
+    DB.getListOfUsernames().then((users) => {
+      console.log('hi');
+      let index = Math.floor(Math.random() * users.total_rows);
+
+      DB.getUser(users.rows[index].id).then((turtleCoder) => {
+        // todo - how to compensate for users w/ 0 code files? try again?
+        let fileCount = Object.keys(turtleCoder.code).length;
+        let index = Math.floor(Math.random() * fileCount);
+        let key = Object.keys(turtleCoder.code)[index];
+
+        this.loadReadonlyFile(turtleCoder.code[key]);
+      }).then(() => {
+        this.runEditorCode();
+      }).catch((e) => {
+        this.getRandomFile();
+      })
+    })
+  }
+
+  loadReadonlyFile(file: TurtleCodeFile) {
+    this.setState({
+      editingMode: false,
+      openedFile: file
+    } as AppState);
+    this.editor.setValue(file.code);
   }
 
   registerNewUser = () => {

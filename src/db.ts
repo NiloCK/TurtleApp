@@ -149,11 +149,6 @@ export class DB {
         return DB.Instance().remoteDB.get(username);
     }
 
-    public static getUsers(): Promise<string> {
-        return DB.Instance().localDB.get('users');
-        // return this.localDB.get('users');
-    }
-
     public static addUser(userName: string, password: string): Promise<PouchDB.Core.Response> {
         let user = {
             _id: userName,
@@ -164,6 +159,10 @@ export class DB {
         };
 
         return this.Instance().remoteDB.put(user);
+    }
+
+    public static getListOfUsernames(): Promise<PouchDB.Core.AllDocsResponse<{}>> {
+        return this.Instance().remoteDB.allDocs();
     }
 
     public static saveCode(user: string, code: TurtleCodeFile): Promise<void> {
