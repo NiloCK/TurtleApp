@@ -77,7 +77,8 @@ class App extends React.Component {
     if (this.state.user) {
       let newCode = this.state.user.getCurrentFile();
       this.setState({
-        editingMode: true
+        editingMode: true,
+        openedFile: newCode
       } as AppState);
       this.editor.updateOptions({
         readOnly: false
@@ -95,6 +96,10 @@ let tom = new Turtle();`);
     if (this.state.user && this.state.user.code[filename]) {
       this.state.user.currentFile = filename;
       this.editor.setValue(this.state.user.getCurrentFile().code);
+      this.setState({
+        openedFile: this.state.user.getCurrentFile(),
+        dirtyFile: false
+      } as AppState);
       this.forceUpdate();
     } else {
       throw new Error(`File not found in this user's data`);
@@ -188,6 +193,95 @@ let tom = new Turtle();`);
     return this.editor.getValue();
   }
 
+  getRandomFile = () => {
+    // console.log('Getting a random file...');
+    DB.getListOfUsernames().then((users) => {
+      let userIndex = Math.floor(Math.random() * users.total_rows);
+
+      DB.getUser(users.rows[userIndex].id).then((turtleCoder) => {
+        // todo - how to compensate for users w/ 0 code files? try again?
+        let fileCount = Object.keys(turtleCoder.code).length;
+        let fileIndex = Math.floor(Math.random() * fileCount);
+        let key = Object.keys(turtleCoder.code)[fileIndex];
+
+        this.loadReadonlyFile(turtleCoder.code[key]);
+      }).then(() => {
+        this.runEditorCode();
+      }).catch((e) => {
+        this.getRandomFile();
+      });
+    });
+  }
+
+  loadReadonlyFile(file: TurtleCodeFile) {
+    this.setState({
+      editingMode: false,
+      openedFile: file
+    } as AppState);
+    this.editor.setValue(file.code);
+  }
+
+  registerNewUser = () => {
+    let user: string = (document.getElementById(HTML_IDS.login_username) as HTMLInputElement).value;
+    let pw: string = (document.getElementById(HTML_IDS.login_password) as HTMLInputElement).value;
+
+    DB.addUser(user, pw).then((resp) => {
+      if (resp.ok) {
+
+        this.setState({
+          user: new TurtleCoder(user, pw)
+        });
+
+        alert(`Welcome! User '${user}' created.`);
+        this.loadUserCurrentFile();
+        this.closeLoginModal();
+      }
+    }).catch((reason: PouchDB.Core.Error) => {
+
+      if (reason.reason === 'Document update conflict.') {
+        alert(`Registration failure: a user with this name already exists.`);
+      } else {
+        alert(`Registration failure: 
+        Reason: ${reason.reason}
+        id: ${reason.id}
+        message: ${reason.message}
+        error: ${reason.error}
+        name: ${reason.name}
+        
+        Please let me know that this happened!`);
+      }
+
+    });
+  }
+
+  evaluateFileForChanges = () => {
+    if (this.state.openedFile) {
+
+      this.setState({
+        dirtyFile: this.state.openedFile.code !== this.getEditorCode()
+      } as AppState);
+    }
+  }
+
+  promptToCreateNewUser(user: string, pw: string) {
+    alert(`No user with that name exists! Click 'Register' above to register this account.`);
+  }
+
+  loadUserData(user: string, pw: string) {
+    return DB.getUser(user).then((userDoc: TurtleCoder) => {
+      //      console.log('Got a user...');
+      if (userDoc.pw !== pw) {
+        alert(`Password incorrect. Please try agian.`);
+      } else {
+        this.setState({
+          user: TurtleCoder.fromObject(userDoc)
+        } as AppState);
+        this.loadUserCurrentFile();
+        this.closeLoginModal();
+      }
+    });
+  }
+
   render() {
     let editorWidth: number = window.innerWidth / 2;
     let editorHeight: number = window.innerHeight;
@@ -258,6 +352,7 @@ let tom = new Turtle();`);
                   loadFile={this.loadFile}
                   newFile={this.newFileDialog}
                   user={this.state.user}
+                  dirtyFile={this.state.dirtyFile}
                 />
               </NavItem>
             </Navbar.Form>
@@ -279,6 +374,7 @@ let tom = new Turtle();`);
             }}
             text-align="left"
             editorDidMount={this.handleEditorDidMount}
+            onChange={this.evaluateFileForChanges.bind(this)}
           />
           <TurtleCanvas
             width={editorWidth}
@@ -304,86 +400,6 @@ let tom = new Turtle();`);
         </div>
       </div >
     );
-  }
-
-  getRandomFile = () => {
-    // console.log('Getting a random file...');
-    DB.getListOfUsernames().then((users) => {
-      let userIndex = Math.floor(Math.random() * users.total_rows);
-
-      DB.getUser(users.rows[userIndex].id).then((turtleCoder) => {
-        // todo - how to compensate for users w/ 0 code files? try again?
-        let fileCount = Object.keys(turtleCoder.code).length;
-        let fileIndex = Math.floor(Math.random() * fileCount);
-        let key = Object.keys(turtleCoder.code)[fileIndex];
-
-        this.loadReadonlyFile(turtleCoder.code[key]);
-      }).then(() => {
-        this.runEditorCode();
-      }).catch((e) => {
-        this.getRandomFile();
-      });
-    });
-  }
-
-  loadReadonlyFile(file: TurtleCodeFile) {
-    this.setState({
-      editingMode: false,
-      openedFile: file
-    } as AppState);
-    this.editor.setValue(file.code);
-  }
-
-  registerNewUser = () => {
-    let user: string = (document.getElementById(HTML_IDS.login_username) as HTMLInputElement).value;
-    let pw: string = (document.getElementById(HTML_IDS.login_password) as HTMLInputElement).value;
-
-    DB.addUser(user, pw).then((resp) => {
-      if (resp.ok) {
-
-        this.setState({
-          user: new TurtleCoder(user, pw)
-        });
-
-        alert(`Welcome! User '${user}' created.`);
-        this.loadUserCurrentFile();
-        this.closeLoginModal();
-      }
-    }).catch((reason: PouchDB.Core.Error) => {
-
-      if (reason.reason === 'Document update conflict.') {
-        alert(`Registration failure: a user with this name already exists.`);
-      } else {
-        alert(`Registration failure: 
-        Reason: ${reason.reason}
-        id: ${reason.id}
-        message: ${reason.message}
-        error: ${reason.error}
-        name: ${reason.name}
-        
-        Please let me know that this happened!`);
-      }
-
-    });
-  }
-
-  private promptToCreateNewUser(user: string, pw: string) {
-    alert(`No user with that name exists! Click 'Register' above to register this account.`);
-  }
-
-  private loadUserData(user: string, pw: string) {
-    return DB.getUser(user).then((userDoc: TurtleCoder) => {
-      //      console.log('Got a user...');
-      if (userDoc.pw !== pw) {
-        alert(`Password incorrect. Please try agian.`);
-      } else {
-        this.setState({
-          user: TurtleCoder.fromObject(userDoc)
-        } as AppState);
-        this.loadUserCurrentFile();
-        this.closeLoginModal();
-      }
-    });
   }
 }
 

@@ -22,6 +22,7 @@ class Controls extends React.Component {
     loadFile: (filename: string) => void;
     newFile: () => void;
     user?: TurtleCoder;
+    dirtyFile: boolean;
   };
 
   render() {
@@ -64,7 +65,7 @@ class Controls extends React.Component {
         <ToggleGrid click={this.props.toggleGridFunction} />
         <ToggleTurtles click={this.props.toggleTurtlesFunction} />
         {this.props.user ?
-          <Save click={this.props.saveCode} />
+          <Save dirtyFile={this.props.dirtyFile} click={this.props.saveCode} />
           :
           ""
         }
@@ -106,13 +107,17 @@ class Login extends ControlButton {
 }
 
 class Save extends ControlButton {
-  constructor(props: { click: Function }) {
+  props: {
+    click: () => void;
+    dirtyFile: boolean;
+  }
+  constructor(props: { click: Function, dirtyFile: boolean }) {
     super(props);
   }
 
   render() {
     return (
-      <Button className="btn btn-primary" onClick={this.props.click}>
+      <Button disabled={!this.props.dirtyFile} className="btn btn-primary" onClick={this.props.click}>
         Save Code
       </Button>
     );
