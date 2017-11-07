@@ -36,6 +36,7 @@ class AppState {
   editingMode: boolean;
   openedFile?: TurtleCodeFile;
   user?: TurtleCoder;
+  dirtyFile: boolean;
 }
 
 class App extends React.Component {
@@ -51,7 +52,8 @@ class App extends React.Component {
       showLoginModal: false,
       editingMode: true,
       openedFile: undefined,
-      user: undefined
+      user: undefined,
+      dirtyFile: false
     };
   }
 
@@ -222,7 +224,10 @@ let tom = new Turtle();`);
           </Modal.Footer>
         </Modal>
 
-        <Navbar staticTop style={{ marginBottom: '0px' }}>
+        <Navbar
+          staticTop={true}
+          style={{ marginBottom: '0px' }}
+        >
           {/* <img src={logo} className="App-logo" alt="logo" /> */}
           <Navbar.Header >
             <Navbar.Brand>
@@ -232,7 +237,7 @@ let tom = new Turtle();`);
           <Nav>
             <Navbar.Form>
               <Button
-                title='Browse our code - loads a random student file in readonly mode.'
+                title="Browse our code - loads a random student file in readonly mode."
                 id={HTML_IDS.appheader_file_browser}
 
                 onClick={this.getRandomFile}
@@ -241,7 +246,7 @@ let tom = new Turtle();`);
               </Button>
             </Navbar.Form>
           </Nav>
-          <Nav pullRight>
+          <Nav pullRight={true}>
             <Navbar.Form>
               <NavItem>
                 <Controls
@@ -258,6 +263,7 @@ let tom = new Turtle();`);
             </Navbar.Form>
           </Nav>
         </Navbar>
+
         <div id="EditorAndCanvas">
           <MonacoEditor
             width={editorWidth}
@@ -289,7 +295,7 @@ let tom = new Turtle();`);
                     </Label>
                   </h3>
                   :
-                  ""
+                  ''
               )
             }
 
@@ -301,24 +307,23 @@ let tom = new Turtle();`);
   }
 
   getRandomFile = () => {
-    console.log('am I clicked??');
+    // console.log('Getting a random file...');
     DB.getListOfUsernames().then((users) => {
-      console.log('hi');
-      let index = Math.floor(Math.random() * users.total_rows);
+      let userIndex = Math.floor(Math.random() * users.total_rows);
 
-      DB.getUser(users.rows[index].id).then((turtleCoder) => {
+      DB.getUser(users.rows[userIndex].id).then((turtleCoder) => {
         // todo - how to compensate for users w/ 0 code files? try again?
         let fileCount = Object.keys(turtleCoder.code).length;
-        let index = Math.floor(Math.random() * fileCount);
-        let key = Object.keys(turtleCoder.code)[index];
+        let fileIndex = Math.floor(Math.random() * fileCount);
+        let key = Object.keys(turtleCoder.code)[fileIndex];
 
         this.loadReadonlyFile(turtleCoder.code[key]);
       }).then(() => {
         this.runEditorCode();
       }).catch((e) => {
         this.getRandomFile();
-      })
-    })
+      });
+    });
   }
 
   loadReadonlyFile(file: TurtleCodeFile) {
@@ -348,8 +353,7 @@ let tom = new Turtle();`);
 
       if (reason.reason === 'Document update conflict.') {
         alert(`Registration failure: a user with this name already exists.`);
-      }
-      else {
+      } else {
         alert(`Registration failure: 
         Reason: ${reason.reason}
         id: ${reason.id}

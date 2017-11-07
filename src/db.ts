@@ -6,15 +6,6 @@ export class TurtleCodeFile {
     code: string;
     authors: Array<string>;
 
-    constructor(name: string, code: string, author?: string) {
-        this.name = name;
-        this.code = code;
-        this.authors = new Array<string>();
-        if (author) {
-            this.authors.push(author);
-        }
-    }
-
     static addAuthor(codeFile: TurtleCodeFile, author: string) {
         if (codeFile.authors.indexOf(author) === -1) {
             codeFile.authors.push(author);
@@ -28,6 +19,15 @@ export class TurtleCodeFile {
             data.code
         );
         return ret;
+    }
+
+    constructor(name: string, code: string, author?: string) {
+        this.name = name;
+        this.code = code;
+        this.authors = new Array<string>();
+        if (author) {
+            this.authors.push(author);
+        }
     }
 
 }
@@ -72,7 +72,7 @@ export class TurtleCoder {
             );
             data.code[file].authors.forEach((author: string) => {
                 TurtleCodeFile.addAuthor(codeFile, author);
-            })
+            });
 
             ret.code[file] = codeFile;
         });

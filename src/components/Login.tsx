@@ -11,7 +11,6 @@ import { HTML_IDS } from '../App';
 export class LoginModal extends React.Component {
     props: {
         show: boolean;
-        // registrationMode: boolean;
         onHide: () => void;
         login: () => void;
         register: () => void;
@@ -19,7 +18,7 @@ export class LoginModal extends React.Component {
     state: {
         registrationMode: boolean;
         retypeValidation: boolean;
-    }
+    };
 
     constructor(props: { registrationMode: boolean }) {
         super(props);
@@ -33,7 +32,8 @@ export class LoginModal extends React.Component {
         this.setState({
             registrationMode: !this.state.registrationMode
         });
-        this.focusUsername();
+        this.focusRetypePW();
+
     }
     validate = () => {
         this.setState({
@@ -47,6 +47,9 @@ export class LoginModal extends React.Component {
     focusUsername = () => {
         (document.getElementById(HTML_IDS.login_username) as HTMLElement).focus();
     }
+    focusRetypePW = () => {
+        (document.getElementById(HTML_IDS.login_retype_password) as HTMLElement).focus();
+    }
 
     render() {
         return (
@@ -57,7 +60,6 @@ export class LoginModal extends React.Component {
             >
                 <Modal.Header>
                     <h2>Log in <small>( <a href="#" onClick={this.toggleRegistrationMode}>Register</a> )</small></h2>
-                    <h3></h3>
                 </Modal.Header>
 
                 <Modal.Body>
@@ -77,8 +79,8 @@ export class LoginModal extends React.Component {
                         validationState={
                             this.state.registrationMode ?
                                 (this.state.retypeValidation ?
-                                    "success" :
-                                    "warning"
+                                    'success' :
+                                    'warning'
                                 )
                                 :
                                 undefined
@@ -110,7 +112,7 @@ export class LoginModal extends React.Component {
                                 false
                         }
                     >
-                        {this.state.registrationMode ? "Register" : "Log In"}
+                        {this.state.registrationMode ? 'Register' : 'Log In'}
                     </button>
                 </Modal.Footer>
             </Modal >
