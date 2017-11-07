@@ -174,7 +174,7 @@ export class DB {
             alert(`Save Failure: ${reason.reason}`);
         }).then((resp: PouchDB.Core.Response) => {
             if (resp.ok) {
-                alert('Saved!');
+                // alert('Saved!');
             }
         });
     }

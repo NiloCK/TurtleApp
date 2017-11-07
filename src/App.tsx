@@ -95,12 +95,7 @@ let tom = new Turtle();`);
   loadFile = (filename: string) => {
     if (this.state.user && this.state.user.code[filename]) {
       this.state.user.currentFile = filename;
-      this.editor.setValue(this.state.user.getCurrentFile().code);
-      this.setState({
-        openedFile: this.state.user.getCurrentFile(),
-        dirtyFile: false
-      } as AppState);
-      this.forceUpdate();
+      this.loadUserCurrentFile();
     } else {
       throw new Error(`File not found in this user's data`);
     }
@@ -180,9 +175,13 @@ let tom = new Turtle();`);
     let ts = this.editor.getValue();
     let js = new ProgramCompiler(ts).getJS();
 
-    // alert(js);
+    if (this.state.user && this.state.dirtyFile) {
+      this.saveEditorCode();
+    }
+
     eval(js);
   }
+
   clearTurtleCanvas = () => {
     let cvs = document.getElementById('turtleCanvas') as HTMLCanvasElement;
     let ctx = cvs.getContext('2d') as CanvasRenderingContext2D;
