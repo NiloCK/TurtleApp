@@ -65,13 +65,8 @@ class App extends React.Component {
     }
   }
 
-  componentDidMount() {
-    // DB.Instance();
-  }
-
   handleEditorDidMount = (editor: {}) => {
     this.editor = editor as monaco.editor.ICodeEditor;
-    // this.login();
     this.loadUserCurrentFile();
   }
 
@@ -272,8 +267,6 @@ let tom = new Turtle();`);
             options={{
               codeLens: false,
               lineNumbersMinChars: 3,
-              /* minimap: { enabled: false }, */
-              /* showFoldingControls: "always", */
               snippetSuggestions: 'none',
               wordBasedSuggestions: false,
               readOnly: !this.state.editingMode
