@@ -8,7 +8,12 @@ import {
   Button,
   DropdownButton,
   MenuItem,
-  Badge
+  Badge,
+  Popover,
+  OverlayTrigger,
+  FormGroup,
+  FormControl,
+  ControlLabel
 } from 'react-bootstrap';
 // import { Appbar } from 'muicss/react';
 
@@ -27,34 +32,71 @@ class Controls extends React.Component {
     dirtyFile: boolean;
   };
 
+  validateFileName = () => {
+
+  }
+
   render() {
+    let popover = (
+      <Popover id="fileOptions" title="File Options:">
+        <FormGroup>
+          <ControlLabel>
+            Rename File:
+            </ControlLabel>
+          <FormControl
+            type="text"
+            placeholder="New File Name"
+            onChange={this.validateFileName}
+          />
+
+        </FormGroup>
+        <FormGroup>
+          <Button className="btn-primary">
+            Rename File
+          </Button>
+        </FormGroup>
+
+        <FormGroup>
+          <Button className="btn-danger">Delete File</Button>
+        </FormGroup>
+
+      </Popover>
+    );
     return (
       <ButtonToolbar>
         {this.props.user &&
           (
-            <SplitButton title={this.props.user.currentFile} id="fileSelect">
+            <OverlayTrigger
+              trigger="click"
+              placement="bottom"
+              rootClose={true}
+              overlay={popover}>
+              <SplitButton
+                title={this.props.user.currentFile}
+                id="fileSelect">
 
-              {this.props.user.getFileNames().map(
-                (file, index) =>
-                  (
-                    <MenuItem
-                      key={index}
-                      eventKey={index}
-                      title="Load this file..."
-                      onSelect={() => { this.props.loadFile(file); }}
-                    >
-                      {file}
-                    </MenuItem>)
-              )}
+                {this.props.user.getFileNames().map(
+                  (file, index) =>
+                    (
+                      <MenuItem
+                        key={index}
+                        eventKey={index}
+                        title="Load this file..."
+                        onSelect={() => { this.props.loadFile(file); }}
+                      >
+                        {file}
+                      </MenuItem>)
+                )}
 
-              <MenuItem divider={true} />
+                <MenuItem divider={true} />
 
-              <MenuItem title="Create New File" onClick={this.props.newFile}>
-                {/* <Glyphicon glyph="file-plus" /> */}
-                Create New File
+                <MenuItem title="Create New File" onClick={this.props.newFile}>
+                  {/* <Glyphicon glyph="file-plus" /> */}
+                  Create New File
               </MenuItem>
 
-            </SplitButton>
+              </SplitButton>
+            </OverlayTrigger>
           )
         }
 
