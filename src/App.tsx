@@ -170,6 +170,24 @@ let tom = new Turtle();`);
     }
   }
 
+  makeACopyOfEditorCode = () => {
+    let { user, openedFile, editingMode } = this.state;
+
+    if (user && openedFile && !editingMode) {
+      let constructedFile = TurtleCodeFile.fromObject(openedFile);
+      TurtleCodeFile.addAuthor(constructedFile, user.name);
+
+      DB.saveCode(
+        user.name,
+        constructedFile
+      ).then(() => {
+        if (user) {
+          this.loadUserData(user.name, user.pw)
+        }
+      })
+    }
+  }
+
   runEditorCode = () => {
     this.clearTurtleCanvas();
     let ts = this.editor.getValue();
@@ -198,7 +216,6 @@ let tom = new Turtle();`);
       let userIndex = Math.floor(Math.random() * users.total_rows);
 
       DB.getUser(users.rows[userIndex].id).then((turtleCoder) => {
-        // todo - how to compensate for users w/ 0 code files? try again?
         let fileCount = Object.keys(turtleCoder.code).length;
         let fileIndex = Math.floor(Math.random() * fileCount);
         let key = Object.keys(turtleCoder.code)[fileIndex];
@@ -347,9 +364,11 @@ let tom = new Turtle();`);
                   toggleGridFunction={TurtleCanvas.toggleGridVisibility}
                   toggleTurtlesFunction={TurtleCanvas.toggleTurtleVisibility}
                   saveCode={this.saveEditorCode}
+                  copyCode={this.makeACopyOfEditorCode}
                   loginFunction={this.openLoginModal}
                   loadFile={this.loadFile}
                   newFile={this.newFileDialog}
+                  readOnly={!this.state.editingMode}
                   user={this.state.user}
                   dirtyFile={this.state.dirtyFile}
                 />
@@ -397,7 +416,7 @@ let tom = new Turtle();`);
           </TurtleCanvas>
 
         </div>
-      </div >
+      </div>
     );
   }
 }

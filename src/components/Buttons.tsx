@@ -18,9 +18,11 @@ class Controls extends React.Component {
     toggleGridFunction: () => void;
     toggleTurtlesFunction: () => void;
     saveCode: () => void;
+    copyCode: () => void;
     loginFunction: () => void;
     loadFile: (filename: string) => void;
     newFile: () => void;
+    readOnly: boolean;
     user?: TurtleCoder;
     dirtyFile: boolean;
   };
@@ -64,10 +66,13 @@ class Controls extends React.Component {
         <Play click={this.props.playFunction} />
         <ToggleGrid click={this.props.toggleGridFunction} />
         <ToggleTurtles click={this.props.toggleTurtlesFunction} />
-        {this.props.user ?
+        {(this.props.user && !this.props.readOnly) ?
           <Save dirtyFile={this.props.dirtyFile} click={this.props.saveCode} />
           :
           ""
+        }
+        {(this.props.user && this.props.readOnly) ?
+          <Copy click={this.props.copyCode} /> : ""
         }
       </ButtonToolbar>
     );
@@ -123,6 +128,27 @@ class Save extends ControlButton {
     );
   }
 }
+
+class Copy extends ControlButton {
+  props: {
+    click: () => void;
+  }
+  constructor(props: { click: Function, dirtyFile: boolean }) {
+    super(props);
+  }
+
+  render() {
+    return (
+      <Button
+        title="Make your own copy of this file."
+        className="btn btn-primary"
+        onClick={this.props.click}>
+        Copy this file
+      </Button>
+    );
+  }
+}
+
 class Play extends ControlButton {
   constructor(props: { click: Function }) {
     super(props);

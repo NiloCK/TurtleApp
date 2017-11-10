@@ -9,7 +9,7 @@ export class TurtleCodeFile {
     static addAuthor(codeFile: TurtleCodeFile, author: string) {
         if (codeFile.authors.indexOf(author) === -1) {
             codeFile.authors.push(author);
-            codeFile.authors.sort();
+            // codeFile.authors.sort();
         }
     }
 
@@ -18,6 +18,11 @@ export class TurtleCodeFile {
             data.name,
             data.code
         );
+
+        data.authors.forEach((author: string) => {
+            TurtleCodeFile.addAuthor(ret, author)
+        })
+
         return ret;
     }
 
@@ -122,6 +127,8 @@ export class TurtleCoder {
 
         return codeFile;
     }
+
+
 
     getFileNames(): Array<string> {
         return Object.keys(this.code);
