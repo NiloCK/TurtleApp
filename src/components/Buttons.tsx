@@ -61,7 +61,12 @@ class Controls extends React.Component {
               rootClose={true}
               overlay={popover}>
               <SplitButton
-                title={this.props.user.currentFile}
+                title={
+                  this.props.readOnly ?
+                    "(ReadOnly Mode)"
+                    :
+                    this.props.user.currentFile
+                }
                 id="fileSelect">
 
                 {this.props.user.getFileNames().map(
