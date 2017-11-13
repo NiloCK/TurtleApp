@@ -381,14 +381,6 @@ let tom = new Turtle();`);
           </Navbar.Header>
           <Nav>
             <Navbar.Form>
-              {/* <Button
-                title="Browse our code - loads a random student file in readonly mode."
-                id={HTML_IDS.appheader_file_browser}
-
-                onClick={this.getRandomFile}
-              >
-                Load a random file!
-              </Button> */}
               <FileBrowser
                 userList={this.state.userList}
                 userFiles={this.state.userFiles}
