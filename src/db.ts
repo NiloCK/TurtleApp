@@ -37,8 +37,6 @@ export class TurtleCodeFile {
 
 }
 
-// todo: Make an authorlist class that's amenable to JSON serialization
-
 export class AuthorList {
     authors: Array<string>;
 
