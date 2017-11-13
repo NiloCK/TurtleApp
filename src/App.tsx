@@ -27,7 +27,9 @@ export const enum HTML_IDS {
   login_password = 'passwordField',
   login_retype_password = 'retypePasswordField',
   new_filename = 'newFilenameField',
-  appheader_file_browser = 'fileBrowser'
+  appheader_file_browser = 'fileBrowser',
+  fileOptions_newFilename = 'newFilename',
+  fileOptions_deleteConfirmation = 'deleteConfirmation'
 }
 
 class AppState {
@@ -92,6 +94,7 @@ let tom = new Turtle();`);
     }
   }
 
+
   loadFile = (filename: string) => {
     if (this.state.user && this.state.user.code[filename]) {
       this.state.user.currentFile = filename;
@@ -99,6 +102,12 @@ let tom = new Turtle();`);
     } else {
       throw new Error(`File not found in this user's data`);
     }
+  }
+
+  updateUser(user: TurtleCoder) {
+    this.setState({
+      user: user
+    } as AppState);
   }
 
   newFileDialog = () => {
@@ -371,6 +380,7 @@ let tom = new Turtle();`);
                   readOnly={!this.state.editingMode}
                   user={this.state.user}
                   dirtyFile={this.state.dirtyFile}
+                  forceUpdate={() => { this.forceUpdate() }}
                 />
               </NavItem>
             </Navbar.Form>

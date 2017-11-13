@@ -15,7 +15,7 @@ import {
   FormControl,
   ControlLabel
 } from 'react-bootstrap';
-// import { Appbar } from 'muicss/react';
+import { FileOptions } from './fileOptions';
 
 class Controls extends React.Component {
   props: {
@@ -30,6 +30,7 @@ class Controls extends React.Component {
     readOnly: boolean;
     user?: TurtleCoder;
     dirtyFile: boolean;
+    forceUpdate: () => void;
   };
 
   validateFileName = () => {
@@ -39,27 +40,15 @@ class Controls extends React.Component {
   render() {
     let popover = (
       <Popover id="fileOptions" title="File Options:">
-        <FormGroup>
-          <ControlLabel>
-            Rename File:
-            </ControlLabel>
-          <FormControl
-            type="text"
-            placeholder="New File Name"
-            onChange={this.validateFileName}
-          />
-
-        </FormGroup>
-        <FormGroup>
-          <Button className="btn-primary">
-            Rename File
-          </Button>
-        </FormGroup>
-
-        <FormGroup>
-          <Button className="btn-danger">Delete File</Button>
-        </FormGroup>
-
+        <FileOptions
+          fileName={this.props.user ? this.props.user.currentFile : ""}
+          userFileNameList={this.props.user ?
+            this.props.user.getFileNames() :
+            []
+          }
+          user={this.props.user!}
+          forceUpdate={this.props.forceUpdate}
+        />
       </Popover>
     );
     return (

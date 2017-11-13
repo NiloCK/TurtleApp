@@ -85,6 +85,21 @@ export class TurtleCoder {
         return ret;
     }
 
+    deleteFile(fileName: string) {
+        delete this.code[fileName];
+        if (this.currentFile === fileName) {
+            this.resetCurrentFile();
+        }
+    }
+
+    resetCurrentFile() {
+        if (this.getFileNames().length > 0) {
+            this.currentFile = this.getFileNames()[0];
+        } else {
+            this.currentFile = "";
+        }
+    }
+
     constructor(name: string, pw: string) {
         this.name = name;
         this.pw = pw;
@@ -133,7 +148,7 @@ export class TurtleCoder {
     }
 
     getCurrentFile(): TurtleCodeFile {
-        if (this.currentFile) {
+        if (this.currentFile && this.currentFile !== "") {
             return this.code[this.currentFile];
         } else {
             let file: TurtleCodeFile = this.newFile();
@@ -152,6 +167,19 @@ export class DB {
 
     public static getUser(username: string): Promise<TurtleCoder> {
         return DB.Instance().remoteDB.get(username);
+    }
+
+    public static updateUserData(user: TurtleCoder) {
+        DB.getUser(user.name).then((userDoc) => {
+            user["_rev"] = userDoc["_rev"];
+            user["_id"] = user.name // ie, userDoc["_id"]
+
+            DB.Instance().remoteDB.put(user).catch((reason) => {
+                alert(reason);
+            });
+        }).catch((reason) => {
+            alert(reason);
+        });
     }
 
     public static addUser(userName: string, password: string): Promise<PouchDB.Core.Response> {
