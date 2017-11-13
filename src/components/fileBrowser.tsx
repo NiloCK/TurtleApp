@@ -49,7 +49,7 @@ export class FileBrowser extends React.Component {
                     userList.map((user, index) => {
                         return (
                             <OverlayTrigger
-                                key={index}
+                                key={"Overlay" + index}
                                 trigger="click"
                                 rootClose={true}
                                 placement="right"
@@ -61,7 +61,7 @@ export class FileBrowser extends React.Component {
                                     />
                                 }
                             >
-                                <MenuItem key={index}>
+                                <MenuItem key={"MenuItem" + index}>
                                     {user}
                                 </MenuItem>
                             </OverlayTrigger>
