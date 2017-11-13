@@ -1,0 +1,31 @@
+{
+    "_id": "users",
+    "_rev": "28-4b944959de87f6d619a745554ac102bf",
+    "users": {
+        "MrK": "hello",
+        "Colin": "hello",
+        "student": "pw",
+        "timmy": "hi",
+        "tommy": "hi",
+        "ChristopherM": "abcd123",
+        "RiyadB": "123456789",
+        "GavinC": "gavicrai08",
+        "AsadR": "asadrizvi17",
+        "SalimO": "salim",
+        "zakariyaA": "zakabombs",
+        "TeneyaH": "...",
+        "justinv": "123456789101112",
+        "franfrie": "password/asdf",
+        "LianB": "liambut1",
+        "justvoll": "",
+        "user1": "password",
+        "user5": "password",
+        "chrisM": "abcd123",
+        "ChrisM": "abcd123",
+        "alert(\"youve been hacked\")": "alert(\"youve been hacked\")",
+        "'or''='": "'or''='",
+        "a": "",
+        "<?php   if(isset($_POST['uname'],$_POST['pass'])) {     $uname =$_POST['uname'];     $pass =$_POST['pass'];       mysql_connect('localhost','root','');     mysql_select_db('test');       $res= mysql_query(\"SELECT * FROM user WHERE username='$uname' AND password='$pass' \");       if(mysql_num_rows($res) > 0)         {             header('location:main.php');         }     else         {             header('location:error.php');         }   }   ?>   <h2>Login</h2>   <form action=\"\" method=\"post\">     User name:<input type=\"text\" name=\"uname\"/><br/><br/>     Password:<input type=\"text\" name=\"pass\"/><br/><br/> <input type=\"submit\" value=\"login\" />   </form>": "",
+        "collkenn": "coll"
+    }
+}
