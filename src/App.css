@@ -2,6 +2,10 @@
   text-align: center;
 }
 
+nav > div.container {
+  width: unset;
+}
+
 .react-monaco-editor-container {
   text-align: left;
 }
