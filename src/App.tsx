@@ -3,6 +3,7 @@ import './App.css';
 import MonacoEditor from 'react-monaco-editor';
 import { Play, Controls } from './components/Buttons';
 import { LoginModal } from './components/Login';
+import { FileBrowser } from './components/fileBrowser';
 import TurtleCanvas from './components/turtleCanvas';
 import ProgramCompiler from './ProgramExecution';
 import { DB, TurtleCoder, TurtleCodeFile, AuthorList } from './db';
@@ -39,6 +40,10 @@ class AppState {
   openedFile?: TurtleCodeFile;
   user?: TurtleCoder;
   dirtyFile: boolean;
+  userList: Array<string>;
+  userFiles: {
+    [index: string]: Array<string>;
+  };
 }
 
 class App extends React.Component {
@@ -55,8 +60,29 @@ class App extends React.Component {
       editingMode: true,
       openedFile: undefined,
       user: undefined,
-      dirtyFile: false
+      dirtyFile: false,
+      userList: [],
+      userFiles: {}
     };
+  }
+
+  componentWillMount() {
+    DB.getAllUserData().then((users) => {
+      let userList = new Array<string>();
+      let userFiles = {};
+
+      users.rows.forEach((user) => {
+        userList.push(user.id);
+        let coder = TurtleCoder.fromObject(user.doc);
+        userFiles[user.id] = coder.getFileNames();
+      });
+      userList.sort();
+
+      this.setState({
+        userList: userList,
+        userFiles: userFiles
+      } as AppState);
+    });
   }
 
   setState(s: { editingMode?: boolean } | any) {
@@ -292,7 +318,7 @@ let tom = new Turtle();`);
     alert(`No user with that name exists! Click 'Register' above to register this account.`);
   }
 
-  loadUserData(user: string, pw: string) {
+  loadUserData = (user: string, pw: string) => {
     return DB.getUser(user).then((userDoc: TurtleCoder) => {
       //      console.log('Got a user...');
       if (userDoc.pw !== pw) {
@@ -355,14 +381,19 @@ let tom = new Turtle();`);
           </Navbar.Header>
           <Nav>
             <Navbar.Form>
-              <Button
+              {/* <Button
                 title="Browse our code - loads a random student file in readonly mode."
                 id={HTML_IDS.appheader_file_browser}
 
                 onClick={this.getRandomFile}
               >
                 Load a random file!
-              </Button>
+              </Button> */}
+              <FileBrowser
+                userList={this.state.userList}
+                userFiles={this.state.userFiles}
+                loadFile={(file) => { this.loadReadonlyFile(file) }}
+              />
             </Navbar.Form>
           </Nav>
           <Nav pullRight={true}>
@@ -380,7 +411,7 @@ let tom = new Turtle();`);
                   readOnly={!this.state.editingMode}
                   user={this.state.user}
                   dirtyFile={this.state.dirtyFile}
-                  forceUpdate={() => { this.forceUpdate() }}
+                  forceUpdate={this.forceUpdate}
                 />
               </NavItem>
             </Navbar.Form>

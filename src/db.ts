@@ -196,6 +196,12 @@ export class DB {
         return this.Instance().remoteDB.allDocs();
     }
 
+    public static getAllUserData(): Promise<PouchDB.Core.AllDocsResponse<{}>> {
+        return this.Instance().remoteDB.allDocs({
+            include_docs: true
+        });
+    }
+
     public static saveCode(user: string, code: TurtleCodeFile): Promise<void> {
         return DB.Instance().remoteDB.get(user).then((userDoc) => {
             userDoc['code'][code.name] = code;
