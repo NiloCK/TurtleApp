@@ -54,11 +54,12 @@ export class FileBrowser extends React.Component {
                                 rootClose={true}
                                 placement="right"
                                 overlay={
-                                    <UserFileList
-                                        username={user}
-                                        userFileList={this.props.userFiles[user]}
-                                        loadFile={this.props.loadFile}
-                                    />
+                                    popoverWrappedFileList({
+                                        username: user,
+                                        loadFile: this.props.loadFile,
+                                        userFileList: this.props.userFiles[user]
+                                    })
+
                                 }
                             >
                                 <MenuItem key={"MenuItem" + index}>
@@ -71,6 +72,20 @@ export class FileBrowser extends React.Component {
             </SplitButton>
         );
     }
+}
+
+function popoverWrappedFileList(p: UserFileListProps) {
+    return (
+        <Popover
+            id={p.username + "FileList"}
+        >
+            <UserFileList
+                loadFile={p.loadFile}
+                userFileList={p.userFileList}
+                username={p.username}
+            />
+        </Popover>
+    );
 }
 
 interface UserFileListProps extends React.Props<UserFileList> {
@@ -101,29 +116,27 @@ class UserFileList extends React.Component {
     render() {
         let { userFileList } = this.props;
         return (
-            <Popover
-                id={this.props.username + "FileList"}
-            >
-                <ListGroup>
-                    {userFileList.map((file, index) => {
-                        return (
-                            <ListGroupItem
-                                key={index}
-                                onClick={
-                                    () => {
-                                        this.loadReadOnlyFile(
-                                            this.props.username,
-                                            file
-                                        )
-                                    }
+
+            <ListGroup>
+                {userFileList.map((file, index) => {
+                    return (
+                        <ListGroupItem
+                            key={index}
+                            onClick={
+                                () => {
+                                    this.loadReadOnlyFile(
+                                        this.props.username,
+                                        file
+                                    )
                                 }
-                            >
-                                {file}
-                            </ListGroupItem>
-                        );
-                    })}
-                </ListGroup>
-            </Popover>
+                            }
+                        >
+                            {file}
+                        </ListGroupItem>
+                    );
+                })}
+            </ListGroup>
+
         )
     }
 }
