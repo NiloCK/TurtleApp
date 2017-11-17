@@ -212,6 +212,15 @@ let tom = new Turtle();`);
       let constructedFile = TurtleCodeFile.fromObject(openedFile);
       TurtleCodeFile.addAuthor(constructedFile, user.name);
 
+      let newFilename = constructedFile.name;
+
+      while (user.getFileNames().indexOf(newFilename) >= 0) {
+        newFilename = prompt(`You already have a file called ${newFilename}.
+Please choose a different name for this file:`)!
+      }
+
+      constructedFile.name = newFilename;
+
       DB.saveCode(
         user.name,
         constructedFile
