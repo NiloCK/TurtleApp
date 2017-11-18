@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { HTML_IDS } from '../App';
-import { TurtleCoder, DB } from '../db'
+import { TurtleCoder, DB } from '../db';
 import {
     FormGroup,
     FormControl,
@@ -33,7 +33,7 @@ export class FileOptions extends React.Component {
         this.state = {
             allowRename: false,
             allowDelete: false
-        }
+        };
     }
 
     validateFileName = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -125,12 +125,12 @@ export class FileOptions extends React.Component {
                     <Button
                         disabled={!this.state.allowDelete}
                         className="btn-danger"
-                        onClick={() => { this.deleteFile() }}
+                        onClick={() => { this.deleteFile(); }}
                     >
                         Delete File
                     </Button>
                 </FormGroup>
             </div>
-        )
+        );
     }
 }

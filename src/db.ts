@@ -20,8 +20,8 @@ export class TurtleCodeFile {
         );
 
         data.authors.forEach((author: string) => {
-            TurtleCodeFile.addAuthor(ret, author)
-        })
+            TurtleCodeFile.addAuthor(ret, author);
+        });
 
         return ret;
     }
@@ -94,7 +94,7 @@ export class TurtleCoder {
         if (this.getFileNames().length > 0) {
             this.currentFile = this.getFileNames()[0];
         } else {
-            this.currentFile = "";
+            this.currentFile = ``;
         }
     }
 
@@ -146,7 +146,7 @@ export class TurtleCoder {
     }
 
     getCurrentFile(): TurtleCodeFile {
-        if (this.currentFile && this.currentFile !== "") {
+        if (this.currentFile && this.currentFile !== '') {
             return this.code[this.currentFile];
         } else {
             let file: TurtleCodeFile = this.newFile();
@@ -169,8 +169,8 @@ export class DB {
 
     public static updateUserData(user: TurtleCoder) {
         DB.getUser(user.name).then((userDoc) => {
-            user["_rev"] = userDoc["_rev"];
-            user["_id"] = user.name // ie, userDoc["_id"]
+            user['_rev'] = userDoc['_rev'];
+            user['_id'] = user.name; // ie, userDoc["_id"]
 
             DB.Instance().remoteDB.put(user).catch((reason) => {
                 alert(reason);

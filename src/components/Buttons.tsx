@@ -33,15 +33,11 @@ class Controls extends React.Component {
     forceUpdate: () => void;
   };
 
-  validateFileName = () => {
-
-  }
-
   render() {
     let popover = (
       <Popover id="fileOptions" title="File Options:">
         <FileOptions
-          fileName={this.props.user ? this.props.user.currentFile : ""}
+          fileName={this.props.user ? this.props.user.currentFile : ''}
           userFileNameList={this.props.user ?
             this.props.user.getFileNames() :
             []
@@ -59,15 +55,17 @@ class Controls extends React.Component {
               trigger="click"
               placement="bottom"
               rootClose={true}
-              overlay={popover}>
+              overlay={popover}
+            >
               <SplitButton
                 title={
                   this.props.readOnly ?
-                    "(ReadOnly Mode)"
+                    '(ReadOnly Mode)'
                     :
                     this.props.user.currentFile
                 }
-                id="fileSelect">
+                id="fileSelect"
+              >
 
                 {this.props.user.getFileNames().map(
                   (file, index) =>
@@ -105,10 +103,10 @@ class Controls extends React.Component {
         {(this.props.user && !this.props.readOnly) ?
           <Save dirtyFile={this.props.dirtyFile} click={this.props.saveCode} />
           :
-          ""
+          ''
         }
         {(this.props.user && this.props.readOnly) ?
-          <Copy click={this.props.copyCode} /> : ""
+          <Copy click={this.props.copyCode} /> : ''
         }
       </ButtonToolbar>
     );
@@ -151,7 +149,7 @@ class Save extends ControlButton {
   props: {
     click: () => void;
     dirtyFile: boolean;
-  }
+  };
   constructor(props: { click: Function, dirtyFile: boolean }) {
     super(props);
   }
@@ -168,7 +166,7 @@ class Save extends ControlButton {
 class Copy extends ControlButton {
   props: {
     click: () => void;
-  }
+  };
   constructor(props: { click: Function, dirtyFile: boolean }) {
     super(props);
   }
@@ -178,7 +176,8 @@ class Copy extends ControlButton {
       <Button
         title="Make your own copy of this file."
         className="btn btn-primary"
-        onClick={this.props.click}>
+        onClick={this.props.click}
+      >
         Copy this file
       </Button>
     );

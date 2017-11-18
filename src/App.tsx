@@ -120,7 +120,6 @@ let tom = new Turtle();`);
     }
   }
 
-
   loadFile = (filename: string) => {
     if (this.state.user && this.state.user.code[filename]) {
       this.state.user.currentFile = filename;
@@ -216,7 +215,7 @@ let tom = new Turtle();`);
 
       while (user.getFileNames().indexOf(newFilename) >= 0) {
         newFilename = prompt(`You already have a file called ${newFilename}.
-Please choose a different name for this file:`)!
+Please choose a different name for this file:`)!;
       }
 
       constructedFile.name = newFilename;
@@ -226,9 +225,9 @@ Please choose a different name for this file:`)!
         constructedFile
       ).then(() => {
         if (user) {
-          this.loadUserData(user.name, user.pw)
+          this.loadUserData(user.name, user.pw);
         }
-      })
+      });
     }
   }
 
@@ -393,7 +392,7 @@ Please choose a different name for this file:`)!
               <FileBrowser
                 userList={this.state.userList}
                 userFiles={this.state.userFiles}
-                loadFile={(file) => { this.loadReadonlyFile(file) }}
+                loadFile={(file) => { this.loadReadonlyFile(file); }}
               />
             </Navbar.Form>
           </Nav>
@@ -434,6 +433,8 @@ Please choose a different name for this file:`)!
             }}
             text-align="left"
             editorDidMount={this.handleEditorDidMount}
+            // todo : check that this 'bind' statement is necessary
+            // eslint-disable-next-line
             onChange={this.evaluateFileForChanges.bind(this)}
           />
           <TurtleCanvas

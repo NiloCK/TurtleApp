@@ -22,7 +22,7 @@ interface FileBrowserProps extends React.Props<FileBrowser> {
 interface FileBrowserState {
     subMenus: {
         [index: string]: boolean;
-    }
+    };
 }
 export class FileBrowser extends React.Component {
     props: FileBrowserProps;
@@ -49,7 +49,7 @@ export class FileBrowser extends React.Component {
                     userList.map((user, index) => {
                         return (
                             <OverlayTrigger
-                                key={"Overlay" + index}
+                                key={'Overlay' + index}
                                 trigger="click"
                                 rootClose={true}
                                 placement="right"
@@ -62,11 +62,11 @@ export class FileBrowser extends React.Component {
 
                                 }
                             >
-                                <MenuItem key={"MenuItem" + index}>
+                                <MenuItem key={'MenuItem' + index}>
                                     {user}
                                 </MenuItem>
                             </OverlayTrigger>
-                        )
+                        );
                     })
                 }
             </SplitButton>
@@ -77,7 +77,7 @@ export class FileBrowser extends React.Component {
 function popoverWrappedFileList(p: UserFileListProps) {
     return (
         <Popover
-            id={p.username + "FileList"}
+            id={p.username + 'FileList'}
         >
             <UserFileList
                 loadFile={p.loadFile}
@@ -105,7 +105,7 @@ class UserFileList extends React.Component {
         }).then(() => {
             // todo : remove this hack
             let popover = document.getElementById(
-                this.props.username + "FileList"
+                this.props.username + 'FileList'
             );
 
             popover!.parentElement!.removeChild(popover!);
@@ -127,7 +127,7 @@ class UserFileList extends React.Component {
                                     this.loadReadOnlyFile(
                                         this.props.username,
                                         file
-                                    )
+                                    );
                                 }
                             }
                         >
@@ -137,6 +137,6 @@ class UserFileList extends React.Component {
                 })}
             </ListGroup>
 
-        )
+        );
     }
 }
