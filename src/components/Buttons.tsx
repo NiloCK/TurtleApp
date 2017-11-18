@@ -16,6 +16,7 @@ import {
   ControlLabel
 } from 'react-bootstrap';
 import { FileOptions } from './fileOptions';
+import { HTML_IDS } from '../App';
 
 class Controls extends React.Component {
   props: {
@@ -35,7 +36,7 @@ class Controls extends React.Component {
 
   render() {
     let popover = (
-      <Popover id="fileOptions" title="File Options:">
+      <Popover id={HTML_IDS.fileOptions_popover} title="File Options:">
         <FileOptions
           fileName={this.props.user ? this.props.user.currentFile : ''}
           userFileNameList={this.props.user ?

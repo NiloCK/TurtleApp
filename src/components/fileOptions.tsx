@@ -58,6 +58,7 @@ export class FileOptions extends React.Component {
 
         DB.updateUserData(user);
         this.props.forceUpdate();
+        this.removePopover();
     }
 
     renameFile = () => {
@@ -75,6 +76,7 @@ export class FileOptions extends React.Component {
 
         DB.updateUserData(user);
         this.props.forceUpdate();
+        this.removePopover();
     }
 
     render() {
@@ -132,5 +134,10 @@ export class FileOptions extends React.Component {
                 </FormGroup>
             </div>
         );
+    }
+
+    private removePopover() {
+        let popover = document.getElementById(HTML_IDS.fileOptions_popover)!;
+        popover.parentElement!.removeChild(popover);
     }
 }

@@ -30,7 +30,8 @@ export const enum HTML_IDS {
   new_filename = 'newFilenameField',
   appheader_file_browser = 'fileBrowser',
   fileOptions_newFilename = 'newFilename',
-  fileOptions_deleteConfirmation = 'deleteConfirmation'
+  fileOptions_deleteConfirmation = 'deleteConfirmation',
+  fileOptions_popover = 'fileOptions_popover'
 }
 
 class AppState {
@@ -411,7 +412,12 @@ Please choose a different name for this file:`)!;
                   readOnly={!this.state.editingMode}
                   user={this.state.user}
                   dirtyFile={this.state.dirtyFile}
-                  forceUpdate={this.forceUpdate}
+                  forceUpdate={
+                    () => {
+                      this.loadUserCurrentFile();
+                      this.forceUpdate();
+                    }
+                  }
                 />
               </NavItem>
             </Navbar.Form>
